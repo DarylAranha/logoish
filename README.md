@@ -8,6 +8,7 @@ Simple syntax ..
    * As a side effect, we need neither special characters, nor any indentation to seperate.
  * no special characters *needed* what so ever . 
  * use ctrl+enter or press "run" to run the program.
+ * all calculations happen through functions. This helps keep parsing code clean, and dead simple
 
 Use help to get a list of commands and functions you can use "help".
 
