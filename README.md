@@ -27,7 +27,9 @@ Example session 1
 
 \>listexamples
 sinrect,randomswirls,mirrorframe,chandelier,shadesofgray,rain,thread,grass,elephanttrunk,rainagain,sinrectagain,growswirls,scribble,smiley,different_metamorphosis
+
 \>showexample rain
+
 \>clear rpt 230 set size mul rnd 2 set c floor sub 255 mul size 128 color rgb c c c goto mul rnd 500 mul rnd 500 angle 65 fwd mul 10 size penup back mul size 10 right 30 pendown fwd mul size 10 rpt 15 fwd mul size .7 left 15 endrpt endrpt
 
 
@@ -35,12 +37,18 @@ Example session 2
 ------- ------- -
 
  \>clear 
+
  \>goto 100 100
+
  \>pendown
+
  \>help color
 Sets the ink color of the pen
 Parameters
 color: the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.
+
  \>color black
+
  \>width 1
+
  \>rpt 100 fwd 1 right 1 endrpt
