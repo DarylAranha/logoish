@@ -26,6 +26,7 @@ Example session 1
 ------- ------- - 
 
 \>listexamples
+
 sinrect,randomswirls,mirrorframe,chandelier,shadesofgray,rain,thread,grass,elephanttrunk,rainagain,sinrectagain,growswirls,scribble,smiley,different_metamorphosis
 
 \>showexample rain
@@ -44,7 +45,9 @@ Example session 2
 
  \>help color
 Sets the ink color of the pen
+
 Parameters
+
 color: the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.
 
  \>color black
