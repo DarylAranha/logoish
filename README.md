@@ -44,6 +44,7 @@ Example session 2
  \>pendown
 
  \>help color
+
 Sets the ink color of the pen
 
 Parameters
@@ -55,3 +56,14 @@ color: the color name to set the color of the ink to. It can be any color that i
  \>width 1
 
  \>rpt 100 fwd 1 right 1 endrpt
+
+Example session 3
+------- ------- -
+
+\>evaldisp rgb mul 100 sin 3 100 100
+
+rgb(14.112000805986721,100,100)
+
+\>evaldisp rgb ceil mul 100 sin 3 100 100
+
+rgb(15,100,100)
