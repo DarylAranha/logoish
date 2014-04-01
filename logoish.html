@@ -643,6 +643,7 @@
                                         }
                                     }
                                     helptext+='<h4>Functions</h4>'+Object.keys(functions).map(function(x) {return x.split(':')[1]}).join(',');
+                                    helptext+="Examples: use <code>listexamples</code> and <code>showexample examplename</code> to go through inbuilt examples. They should give you a fair idea of how to write logoish programs. \nRemember this is pre-alpha stuff. Syntax subject to change.\nAnd hey! Don't forget to 'pendown' first!";
                                 } else {
                                     helptext=getHelp(topic);
                                 }
