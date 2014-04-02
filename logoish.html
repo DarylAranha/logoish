@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <!--
  This file is part of "Logoish".
@@ -126,8 +127,7 @@
               var endrange_i = params.indexOf(endstring);
               if (endrange_i==-1){ throw ("NO matching "+endstring) }   
               var extracted=params.slice(0,endrange_i);
-              console.log(extracted);
-              if (extracted.indexOf(startstring)!=-1){ throw ("Nesting not allowed") }   
+              //if (extracted.indexOf(startstring)!=-1){ throw ("Nesting not allowed") }   
               params.splice(0,endrange_i+1);
               return extracted;
         }
@@ -591,6 +591,11 @@
 
                                 
                         },
+                        'comment':{run: function(params){
+                                            extractrange_single(params,'comment','endcomment');
+                                  }, 
+                                  help: 'anything between "comment" and "endcomment" will be ignored',
+                                  shorthelp:'anything between "comment" and "endcomment will" be ignored. But it has to be entered as a seperate command, and cannot come in between parameters of commands' },
                         'help': {
                             run:function(params){
                                 function hasShortHelp(topic){
