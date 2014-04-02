@@ -116,7 +116,7 @@
                   if (startstring == params[i]) count++; 
                   if (endstring == params[i]) count--; 
               }
-              if (count!=0){ throw ("NO matching "+endstring }   
+              if (count!=0){ throw ("NO matching "+endstring)};  
               
               var extracted=params.slice(0,i - 1);
               params.splice(0,i);
@@ -124,10 +124,11 @@
         }
         function extractrange_single(params,startstring,endstring){
               var endrange_i = params.indexOf(endstring);
-              if (endrange_i==-1){ throw ("NO matching "+endstring }   
-              var extracted=params.slice(0,endrange_i-1);
-              if (extracted.indexOf(startstring!=-1)){ throw ("Nesting not allowed" }   
-              params.splice(0,endrange_i);
+              if (endrange_i==-1){ throw ("NO matching "+endstring) }   
+              var extracted=params.slice(0,endrange_i);
+              console.log(extracted);
+              if (extracted.indexOf(startstring)!=-1){ throw ("Nesting not allowed") }   
+              params.splice(0,endrange_i+1);
               return extracted;
         }
 
@@ -359,7 +360,7 @@
                                     
                                     var times = evaluate(extracted); 
                                     for (var i = 0; i < times; i++){
-                                        execit(extracted);
+                                        execit(extracted.slice());
                                     }
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',
