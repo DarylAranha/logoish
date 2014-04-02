@@ -16,7 +16,7 @@ Use the "listexamples" command to get a list of available examples.
 Then use showexample with the name of the example you want to use.
 
 **Big fat Warning**: Alpha/pre-alpha/bleeding-edge/Toy quality stuff. Not for serious or production use.
- * Syntax subject to change.
+ * Syntax and core subject to change. (currently changing every couple of days)
  * No syntax check .. currently, if you dont adhere to the syntax in a looping program (repeated commands or animation), it could generally lockup your machine for a few seconds or minutes. In exceptional cases, there is a chance of infinite loop.
 
 Happy drawing! And don't forget to "pendown".
