@@ -105,17 +105,37 @@
             }             
             var varname='func:'+curparam;
             if (functions.hasOwnProperty(varname)) {
-                //console.log('got function '+varname);
                 return functions[varname].run(params);
             }
             return curparam;
         }
 
-        var vars={
+        function extractrange_multi(params,startstring,endstring){
+              var i, count,endrange_i;
+              for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
+                  if (startstring == params[i]) count++; 
+                  if (endstring == params[i]) count--; 
+              }
+              if (count!=0){ throw ("NO matching "+endstring }   
+              
+              var extracted=params.slice(0,i - 1);
+              params.splice(0,i);
+              return extracted;
+        }
+        function extractrange_single(params,startstring,endstring){
+              var endrange_i = params.indexOf(endstring);
+              if (endrange_i==-1){ throw ("NO matching "+endstring }   
+              var extracted=params.slice(0,endrange_i-1);
+              if (extracted.indexOf(startstring!=-1)){ throw ("Nesting not allowed" }   
+              params.splice(0,endrange_i);
+              return extracted;
         }
 
+        var vars={
+        };
+
         var lists={
-        }
+        };
         var functions={
             'func:sin':{run:function(params) {
                     return (Math.sin(parseFloat(evaluate(params))));
@@ -335,28 +355,12 @@
 
                         },
                         'rpt': {run: function(p) {
-                                    //debug('execlvl: ' + execlvl);
-                                    //debug('params: '+ p.join(' '));
-                                    var i, count,endrpt;
-                                    var times = evaluate(p); 
-                                    //debug('times:',times);
-                                    for (i = 0, count=1; (0 != count) && (i < p.length) ; i++){
-                                        if ('rpt' == p[i]) count++; 
-                                        if ('endrpt' == p[i]) count--; 
-                                        debug(count);
-                                    }
+                                    var extracted=extractrange_multi(p,'rpt','endrpt');
                                     
-                                    endrpt = i;
+                                    var times = evaluate(extracted); 
                                     for (var i = 0; i < times; i++){
-                                        var extracted=p.slice(0,endrpt - 1); //also prevent the params from geting "shift"ed off for the next iteration 
-                                      //  debug('params extracted : '+ extracted.join(','));
-                                      //  execlvl++;
                                         execit(extracted);
-                                      //  execlvl--;
                                     }
-                                    debug('current params: ' + p.join(','));
-                                    p.splice(0,endrpt);
-                                    debug('remaining params: ' + p.join(','));
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',
                                 'shorthelp':'Repeat the set of commands following, bounded by endrpt',
@@ -476,10 +480,7 @@
                                         var name = params.shift();
                                         if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
                                         if (vars.hasOwnProperty('vars:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        var endsat = params.indexOf('endlist');
-                                        if (endsat == -1) logIt('ERROR: list does not end!'); 
-                                        lists['lists:'+ name]={data:params.slice(0,endsat), index:0};
-                                        params.splice(0,endsat+1);
+                                        lists['lists:'+ name]={data:extractrange_single(params,'list','endlist'), index:0};
                                     },
                                 'help':'Creates a list of items. Use the pickfromlist function.',
                                 'shorthelp':'Creates a list of items',
