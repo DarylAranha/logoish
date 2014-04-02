@@ -45,6 +45,7 @@
                               };
         var c=document.getElementById('c');
         var i=document.getElementById('command');
+        var skipwords=['' , ';' , ',' , '[' , ']' , '(' , ')' , '{' , '}' ];
         i.onkeypress=function(e){
             if (e.ctrlKey==true && e.keyCode==13){
                 executecommand();
@@ -91,7 +92,7 @@
             else 
                 saveLast = save;
             params = cmdline.split(/\s+/);
-            params = params.filter(function(x){ return (['' , ';' , ',' , '[' , ']' , '(' , ')' , '{' , '}' ].indexOf(x) == -1) });
+            params = params.filter(function(x){ return (skipwords.indexOf(x) == -1) });
             execit(params);
         }
 
@@ -137,6 +138,10 @@
 
         var lists={
         };
+
+        var userfunctions={
+        }
+
         var functions={
             'func:sin':{run:function(params) {
                     return (Math.sin(parseFloat(evaluate(params))));
@@ -254,7 +259,7 @@
                                 'help':'Sets the angle in which to move the pen',
                                 'shorthelp':'Sets the angle in which to move the pen',
                                 'params':{
-                                    'angle':{help: 'The angle in degrees '},
+                                    'angle':{help: 'The angle in degrees ',type:'angle'},
                                  }
                            },
                       'width':{run: function(params) {
@@ -263,7 +268,7 @@
                                 'help':'Sets the linewidth of the pen',
                                 'shorthelp':'Sets the linewidth of the pen',
                                 'params':{
-                                    'width':{help: 'width in pixels'},
+                                    'width':{help: 'width in pixels',type:'pixels'},
                                  }
                            },
                       'right':{run: function(params) {
@@ -274,7 +279,7 @@
                                 'help':'Offsets the angle to the right in which to move the pen',
                                 'shorthelp':'Offsets the angle to the right in which to move the pen',
                                 'params':{
-                                    'angle':{help: 'The angle in degrees '}
+                                    'angle':{help: 'The angle in degrees ',type:'angle'}
                                  }
 
                        },
@@ -285,7 +290,7 @@
                                 },
                                 'help':'Offsets the angle to the left in which to move the pen',
                                 'shorthelp':'Offsets the angle to the left in which to move the pen',
-                                'params':{'angle': {help:'The angle in degrees '}}
+                                'params':{'angle': {help:'The angle in degrees',type:'angle'}}
                         },
                         'fwd':{run: function(params) {
                                    if (pen.down){
@@ -308,12 +313,12 @@
                                },
                                 'shorthelp':'Moves the pen forward by n pixels',
                                 'help':'Moves the pen forward n pixels in the angle of the pen',
-                                'params':{'distance':{help: 'The distance in pixel by which to move the pen from its current position'}}
+                                'params':{'distance':{help: 'The distance in pixel by which to move the pen from its current position',type:'pixels'}}
                         },
                         'back':{run: function(params){commands['fwd'].run([-evaluate(params)])},
                                 'shorthelp':'Moves the pen backward by n pixels',
                                 'help':'Moves the pen backward n pixels in the angle of the pen from its currnet position',
-                                'params':{'distance': {help: 'The distance in pixel by which to move the pen from its current position'}}
+                                'params':{'distance': {help: 'The distance in pixel by which to move the pen from its current position',type:'pixels'}}
                                },
                         'goto':{run: function(params) {
                                      pen.x = getNum(evaluate(params));
@@ -322,8 +327,8 @@
                                  },
                                 'shorthelp':'Moves the pen to the given posisiton without drawing anything',
                                 'help':'Moves the pen forward n pixels in the angle of the pen',
-                                'params':{'distanceX': {help:'X part of the co ordinate'},
-                                          'distanceY': {help:'Y part of the co ordinate'}
+                                'params':{'distanceX': {help:'X part of the co ordinate',type:'pixels'},
+                                          'distanceY': {help:'Y part of the co ordinate',type:'pixels'}
                                          }
 
                         },
@@ -343,7 +348,7 @@
                                 },
                                 'help':'Sets the ink color of the pen',
                                 'shorthelp':'Sets the ink color of the pen',
-                                'params':{ 'color': {help: 'the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.'}}
+                                'params':{ 'color': {help: 'the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.',type:'color'}}
 
                         },
                         'clear':{run: function(params) {
@@ -365,7 +370,20 @@
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',
                                 'shorthelp':'Repeat the set of commands following, bounded by endrpt',
-                                'params':{}
+                                'params':{
+                                    times:{
+                                        help:'The number of times to repeat the steps',
+                                        type:'integer'
+                                    },
+                                    commands:{
+                                        help:'the set of instructions to repeat',
+                                        type:'block',
+                                        parseropts:{
+                                            blockstart:'rpt',
+                                           blockend:'endrpt'
+                                        }
+                                    }
+                                  }
 
                         },
                         'save':{run: function(params){
@@ -385,7 +403,7 @@
                                 
                                 'help':'Saves the last command to given slot',
                                 'shorthelp':'Saves the last command to the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to save. No overwriting allowed.' }}
+                                'params':{'slotname':{help: 'The alphanumeric name of the slot to save. No overwriting allowed.',type:'string' }}
 
                                },
                         'show':{run: function(params){
@@ -402,7 +420,7 @@
                                  dontclear:true,
                                 'shorthelp':'Show a saved commmand',
                                 'help':'Retrieve and populate the command prompt with a saved command, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the slot to show the command from' }}
+                                'params':{'slotname':{help: 'The name of the slot to show the command from',type:'string' }}
 
                                 },
                         'last':{run: function(params){
@@ -424,7 +442,7 @@
                                    },
                                 'shorthelp':'Deletes the command from the given slot',
                                 'help':'Deletes the command from the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to delete' }}
+                                'params':{'slotname':{help: 'The alphanumeric name of the slot to delete',type:'string' }}
 
                                 },
                         'saved': {run: function(params){
@@ -443,8 +461,8 @@
                                 'help':'sets the value of a variable to the given value',
                                 'shorthelp':'sets the value of a variable',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the variable to set. Overwriting allowed. Note: cannot use function names as variables' },
-                                            'value':{help: 'The value to set.' }
+                                            'varname':{help: 'The alphanumeric name of the variable to set. Overwriting allowed. Note: cannot use function names as variables',type:'varname' },
+                                            'value':{help: 'The value to set.',type:'any' }
                                          }
                                },
                         'incr':{run: function(params){
@@ -458,8 +476,8 @@
                                 'help':'increases the value of a variable by given value',
                                 'shorthelp':'increases the value of a variable by given value',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the variable to increase. Note: cannot use function names as variables' },
-                                            'value':{help: 'The value to increase by.' }
+                                            'varname':{help: 'The alphanumeric name of the variable to increase. Note: cannot use function names as variables',type:'varname' },
+                                            'value':{help: 'The value to increase by.',type:'any' }
                                          }
                                },
                         'decr':{run: function(params){
@@ -473,8 +491,8 @@
                                 'help':'decreases the value of a variable by given value',
                                 'shorthelp':'decreases the value of a variable by given value',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the variable to decrease. Note: cannot use function names as variables' },
-                                            'value':{help: 'The value to decrease by.' }
+                                            'varname':{help: 'The alphanumeric name of the variable to decrease. Note: cannot use function names as variables', type:'varname'},
+                                            'value':{help: 'The value to decrease by.', type:'any' }
                                          }
                                },
                         'setlist':{run: function(params){
@@ -486,8 +504,18 @@
                                 'help':'Creates a list of items. Use the pickfromlist function.',
                                 'shorthelp':'Creates a list of items',
                                 'params':{
-                                            'listname':{help: 'The alphanumeric name of the list to set. Overwriting allowed. Note: cannot use function names as variables' },
-                                            'list':{help: 'list of items followed by endlist' }
+                                            'listname':{
+                                                help: 'The alphanumeric name of the list to set. Overwriting allowed. Note: cannot use function names as variables',
+                                                type:'varname'
+                                             },
+                                            'list':{
+                                                help: 'list of items followed by endlist',
+                                                type:'block',
+                                                parseropts:{
+                                                    blockstart:'setlist',
+                                                    blockend:'endlist'
+                                                } 
+                                             }
                                          }
                                },
                         'anim':{run: function(params){
@@ -545,8 +573,22 @@
                                 'help':'Animates the commands till "endanim" optionally seperated by "nextanim"',
                                 'shorthelp':'Animates the commands till "endanim". You cannot currently have more than one animation block. But you can do multiple animations in the same block. Just use "nextanim" followed by times and delay parameter to mark the seperation. To get a clearer idea, look at the examples',
                                 'params':{
-                                            'times':{help: 'the number of times to animate' },
-                                            'delay':{help: 'the delay between frames in milliseconds' }
+                                            'times':{
+                                                help: 'the number of times to animate',
+                                                type:'integer'
+                                             },
+                                            'delay':{
+                                                help: 'the delay between frames in milliseconds',
+                                                type:'milliseconds'
+                                             },
+                                            'commandblock':{
+                                                help: 'the set of instructions to repeat for each frame', 
+                                                type:'block',
+                                                parseropts:{
+                                                    blockstart:'anim',
+                                                    blockend:'endanim'
+                                                }
+                                             }
                                          }
                                },
                         'resetlist':{run: function(params){
@@ -559,14 +601,20 @@
                                 'help':'Resets the index of the list back to the first item in the list',
                                 'shorthelp':'Resets the index of the list back to the first item in the list',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the list whose index is to be reset.' },
+                                            'varname':{help: 'The alphanumeric name of the list whose index is to be reset.',type:'varname'},
                                          }
                                },
                         'evaldisp':{run: function(params){
                                         logIt(evaluate(params));
                                     },
-                               shorthelp: 'evaluate and display the result of the function call or variable that follows',
-                               help: 'evaluate and display the result of the function call or variable that follows',
+                                    shorthelp: 'evaluate and display the result of the function call or variable that follows',
+                                    help: 'evaluate and display the result of the function call or variable that follows',
+                                    params:{
+                                        'expression':{
+                                            help:'can be any kind of expression that results in a value',
+                                            type:'any'
+                                         }
+                                    }
                                },
 		            	'listexamples':{run: function(params){
 		            			logIt(Object.keys(examples).map(function(x){return x.split(':')[1]}));
@@ -587,7 +635,7 @@
                                  dontclear:true,
                                 'shorthelp':'Show an inbuilt example',
                                 'help':'Retrieve and populate the command prompt with a saved example, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the example. tos show' }}
+                                'params':{'slotname':{help: 'The name of the example. to show',type:'string'}}
 
                                 
                         },
@@ -595,7 +643,11 @@
                                             extractrange_single(params,'comment','endcomment');
                                   }, 
                                   help: 'anything between "comment" and "endcomment" will be ignored',
-                                  shorthelp:'anything between "comment" and "endcomment will" be ignored. But it has to be entered as a seperate command, and cannot come in between parameters of commands' },
+                                  shorthelp:'anything between "comment" and "endcomment will" be ignored. But it has to be entered as a seperate command, and cannot come in between parameters of commands' ,
+                                  params:{
+                                        comment: {help: 'the comment' , type:'block',parseropts:{blockstart:'comment',blockend:'endcomment'}}
+                                    }
+                                  },
                         'help': {
                             run:function(params){
                                 function hasShortHelp(topic){
