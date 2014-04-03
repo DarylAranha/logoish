@@ -112,7 +112,7 @@
             return curparam;
         }
 
-        function extractrange_multi(params,startstring,endstring){
+        function extractblock_multi(params,startstring,endstring){
               var i, count,endrange_i;
               for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
                   if (startstring == params[i]) count++; 
@@ -124,7 +124,7 @@
               params.splice(0,i);
               return extracted;
         }
-        function extractrange_single(params,startstring,endstring){
+        function extractblock_single(params,startstring,endstring){
               var endrange_i = params.indexOf(endstring);
               if (endrange_i==-1){ throw ("NO matching "+endstring) }   
               var extracted=params.slice(0,endrange_i);
@@ -141,6 +141,9 @@
 
         var userfunctions={
         }
+
+        var generated_code={
+        };
 
         var functions={
             'func:sin':{run:function(params) {
@@ -365,7 +368,7 @@
 
                         },
                         'rpt': {run: function(p) {
-                                    var extracted=extractrange_multi(p,'rpt','endrpt');
+                                    var extracted=extractblock_multi(p,'rpt','endrpt');
                                     
                                     var times = evaluate(extracted); 
                                     for (var i = 0; i < times; i++){
@@ -503,7 +506,7 @@
                                         var name = params.shift();
                                         if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
                                         if (vars.hasOwnProperty('vars:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        lists['lists:'+ name]={data:extractrange_single(params,'setlist','endlist'), index:0};
+                                        lists['lists:'+ name]={data:extractblock_single(params,'setlist','endlist'), index:0};
                                     },
                                 'help':'Creates a list of items. Use the pickfromlist function.',
                                 'shorthelp':'Creates a list of items',
@@ -644,7 +647,7 @@
                                 
                         },
                         'comment':{run: function(params){
-                                            extractrange_single(params,'comment','endcomment');
+                                            extractblock_single(params,'comment','endcomment');
                                   }, 
                                   help: 'anything between "comment" and "endcomment" will be ignored',
                                   shorthelp:'anything between "comment" and "endcomment will" be ignored. But it has to be entered as a seperate command, and cannot come in between parameters of commands' ,
@@ -652,6 +655,25 @@
                                         comment: {help: 'the comment' , type:'block',parseropts:{blockstart:'comment',blockend:'endcomment'}}
                                     }
                                   },
+                        'function':{run: function(params){
+                                    user_functions['func:'+evaluate(params)].run();
+                                },
+                                help:'register user defined functions',
+                                shorthelp:'register user defined functions',
+                                params:{
+                                        name: {help: 'the name of the function',type:'string'},
+                                        params: {
+                                            help:'the list of parameters must be defined between "params" and "endparams"',
+                                            type:'block'{
+                                                blockstart:'params',
+                                                blockend: 'endparams',
+                                                begun:true
+                                            }
+                                        }
+
+                                }
+                        },
+
                         'help': {
                             run:function(params){
                                 function hasShortHelp(topic){
@@ -699,7 +721,10 @@
                                 }
                                 logIt(helptext);
                                 saveLast=false;
-                            }
+                            },
+                            help:'shows this help',
+                            shorthelp'shows this help',
+                            params { 'topic':{help:'the topic',type:'string'}} 
                         }
         };
 
@@ -740,4 +765,8 @@
 
     </script>
 
-</div></div></div></body></html>
+</div>
+</div>
+</div>
+</body>
+</html>
