@@ -18,7 +18,21 @@
 -->
 
 
-    <head></head><body style="margin:2px; padding:2px;">
+    <head>
+        <style>
+            .command_history{
+                font-style:italic;
+                color:blue;
+                cursor:copy;
+                }
+            .command_history:before{
+                content:'>';
+                color:#999;
+            }
+
+        </style>
+    </head>
+    <body style="margin:2px; padding:2px;">
         <div id="log" style="height:7em; margin: 0.3em; padding: 1em; overflow: auto; font-size: 0.8em; line-height: 1.1em; border: 1px solid lightgray; border-radius: 0.5em">Log: </div>
         <div style="display: inline-block; margin: .2em;margin-top: 0; ">
         <canvas height="512" width="512" id="c" style="width:512px; height:512px; margin:5px; border:1px solid black; box-shadow: 0px 0px 4px 4px gray; display: inline-block"></canvas>
@@ -32,7 +46,7 @@
     <script>
         Array.prototype.split=function(seperator){
                                 data=this.slice();
-                                var i=this.indexOf(seperator); 
+                                var i=this.indexOf(seperator);
                                 if (i==-1) {return [data]} ; 
                                 ret=[]; 
                                 while (i !=-1){
@@ -45,14 +59,26 @@
                               };
         var c=document.getElementById('c');
         var i=document.getElementById('command');
+        var curcommand=-1;
         var skipwords=['' , ';' , ',' , '[' , ']' , '(' , ')' , '{' , '}' ];
+        var key_offset={'Down':1,'Up':-1};
         i.onkeypress=function(e){
             if (e.ctrlKey==true && e.keyCode==13){
                 executecommand();
             }
-        }
+            if (e.ctrlKey==true && (e.keyCode==38 || e.key=="Up" || e.keyCode==40 || e.key=='Down') && (i.value=="" || curcommand != -1)){
+                if (curcommand==-1) curcommand=0;
+                curcommand=((command_history.length+curcommand+key_offset[e.key])%(command_history.length));
+                var s=command_history[curcommand];
+                if (s!=undefined)
+                    i.value=s;
+            } else {
+                curcommand=-1;
+            }
+        };
         var log=document.getElementById('log');
         var last_run_command='';
+        var command_history=[];
         var execlvl=0;
         var debug_mode=false;
         var saveLast=true;
@@ -77,10 +103,17 @@
         var piBy180=Math.PI/180;
         var saveLast=true;
 
+
+        function htmlescape(thestring){
+            return escape(thestring).replace(/%(..)/g,"&#x$1;");
+        }
+
         function executecommand(){
-            logIt('&gt;<span style="font-style:italic">'+ i.value);
             var thecommand = i.value;
+            command_history.push(thecommand);
+            logIt('<a onclick="if (i.value=='+"''" +') {i.value=command_history[' + (command_history.length - 1) + '];}" class=command_history style="">'+ htmlescape(thecommand) +'</span>' );
             execcommand(thecommand);
+
             if (saveLast) last_run_command=thecommand;
 
     //        execcommand('info',false);
@@ -662,9 +695,10 @@
                                 shorthelp:'register user defined functions',
                                 params:{
                                         name: {help: 'the name of the function',type:'string'},
-                                        params: {
+                                        'params': {
                                             help:'the list of parameters must be defined between "params" and "endparams"',
-                                            type:'block'{
+                                            type:'block',
+                                            parseropts:{
                                                 blockstart:'params',
                                                 blockend: 'endparams',
                                                 begun:true
@@ -723,8 +757,13 @@
                                 saveLast=false;
                             },
                             help:'shows this help',
-                            shorthelp'shows this help',
-                            params { 'topic':{help:'the topic',type:'string'}} 
+                            shorthelp:'shows this help',
+                            params: { 
+                                'topic':{
+                                    help:'the topic',
+                                    type:'string'
+                                 }
+                            } 
                         }
         };
 
@@ -736,7 +775,7 @@
                             commands[command].run(params);
                             if (!commands[command].dontclear) i.value='';
                         } else {
-                            logIt('Uh oh.. dont know how to do ' + escape(command) + ' If you want to check the contents of a variable or return value of a function, use the "evaldisp" command.');
+                            logIt('Uh oh.. dont know how to do ' + htmlescape(command) + ' If you want to check the contents of a variable or return value of a function, use the "evaldisp" command.');
                             //params=[];
                         }
                 } catch(e){
