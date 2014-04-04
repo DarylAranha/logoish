@@ -760,7 +760,7 @@
                                 
                                 'help':'Saves the last command to given slot',
                                 'shorthelp':'Saves the last command to the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to save. No overwriting allowed.',type:'string' }}
+                                'params':{'slotname':{help: 'The alphanumeric name of the slot to save. No overwriting allowed.',type:'stringasis' }}
 
                                },
                         'show':{run: function(params){
@@ -777,7 +777,7 @@
                                  dontclear:true,
                                 'shorthelp':'Show a saved commmand',
                                 'help':'Retrieve and populate the command prompt with a saved command, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the slot to show the command from',type:'string' }}
+                                'params':{'slotname':{help: 'The name of the slot to show the command from',type:'stringasis' }}
 
                                 },
                         'last':{run: function(params){
@@ -799,7 +799,7 @@
                                    },
                                 'shorthelp':'Deletes the command from the given slot',
                                 'help':'Deletes the command from the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to delete',type:'string' }}
+                                'params':{'slotname':{help: 'The alphanumeric name of the slot to delete',type:'stringasis' }}
 
                                 },
                         'saved': {run: function(params){
@@ -834,7 +834,7 @@
                                 'shorthelp':'increases the value of a variable by given value',
                                 'params':{
                                             'varname':{help: 'The alphanumeric name of the variable to increase. Note: cannot use function names as variables',type:'varname' },
-                                            'value':{help: 'The value to increase by.',type:'any' }
+                                            'value':{help: 'The value to increase by.',type:'any'}
                                          }
                                },
                         'decr':{run: function(params){
@@ -973,13 +973,13 @@
                                          }
                                     }
                                },
-		            	'listexamples':{run: function(params){
-		            			logIt(Object.keys(examples).map(function(x){return x.split(':')[1]}));
-		            	            },
+                        'listexamples':{run: function(params){
+                                    logIt(Object.keys(examples).map(function(x){return x.split(':')[1]}));
+                                },
                                 shorthelp:'Show a list of examples.',
                                 help:'Show a list of examples. Use the showexample command to use individual examples',
                                 params:{},
-		            	       },
+                         },
                         'showexample':{run: function(params){
                                         var name='example:'+params.shift();
                                         if (Object.keys(examples).indexOf(name) != -1){
@@ -992,7 +992,7 @@
                                  dontclear:true,
                                 'shorthelp':'Show an inbuilt example',
                                 'help':'Retrieve and populate the command prompt with a saved example, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the example. to show',type:'string'}}
+                                'params':{'slotname':{help: 'The name of the example. to show',type:'stringasis'}}
 
                                 
                         },
@@ -1004,14 +1004,14 @@
                                   params:{
                                         comment: {help: 'the comment' , type:'block',parseropts:{blockstart:'comment',blockend:'endcomment'}}
                                     }
-                                  },
+                         },
                         'function':{run: function(params){
                                     user_functions['func:'+evaluate(params)].run();
                                 },
                                 help:'register user defined functions',
                                 shorthelp:'register user defined functions',
                                 params:{
-                                        name: {help: 'the name of the function',type:'string'},
+                                        name: {help: 'the name of the function',type:'stringasis'},
                                         'params': {
                                             help:'the list of parameters must be defined between "params" and "endparams"',
                                             type:'block',
@@ -1078,7 +1078,7 @@
                             params: { 
                                 'topic':{
                                     help:'the topic',
-                                    type:'string'
+                                    type:'stringasis'
                                  }
                             } 
                         }
