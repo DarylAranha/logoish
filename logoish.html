@@ -79,7 +79,7 @@
                                 var i=this.indexOf(seperator);
                                 if (i==-1) {return [data]} ; 
                                 ret=[]; 
-                                while (i !=-1){
+                                while (i != -1){
                                     ret.push(data.slice(0,i));
                                     data.splice(0,i+1);
                                     i=data.indexOf(seperator);
@@ -87,8 +87,46 @@
                                 ret.push(data);
                                 return ret 
                               };
+        function getNum(s){
+            if (isNaN(s)) 
+                return 0;
+            else 
+                return (parseFloat(s));
+        }
+        function logIt(message){
+            log.innerHTML+='<br>'+message;
+            log.scrollTop = log.scrollTopMax;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function debug(message){
+            if (debug_mode) logIt(message);
+        }
+
+        function extractblock_multi(params,startstring,endstring){
+              var i, count,endrange_i;
+              for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
+                  if (startstring == params[i]) count++; 
+                  if (endstring == params[i]) count--; 
+              }
+              if (count!=0){ throw ("NO matching "+endstring)};  
+              var extracted=params.slice(0,i - 1);
+              params.splice(0,i);
+              return extracted;
+        }
+
+        function extractblock_single(params,startstring,endstring){
+              var endrange_i = params.indexOf(endstring);
+              if (endrange_i==-1){ throw ("NO matching "+endstring) }   
+              var extracted=params.slice(0,endrange_i);
+              params.splice(0,endrange_i+1);
+              return extracted;
+        }
+
         var c=document.getElementById('c');
+        var log=document.getElementById('log');
         var i=document.getElementById('command');
+
         var curcommand=-1;
         var skipwords=['' , ';' , ',' , '[' , ']' , '(' , ')' , '{' , '}' ];
         var key_offset={'Down':1,'Up':-1};
@@ -106,26 +144,17 @@
                 curcommand=-1;
             }
         };
-        var log=document.getElementById('log');
+
         var last_run_command='';
         var command_history=[];
+        var vars={};
+        var lists={};
+        var userfunctions={}
+        var generated_code={};
+
         var execlvl=0;
         var debug_mode=false;
         var saveLast=true;
-        function getNum(s){
-            if (isNaN(s)) 
-                return 0;
-            else 
-                return (parseFloat(s));
-        }
-        function logIt(message){
-            log.innerHTML+='<br>'+message;
-            log.scrollTop = log.scrollTopMax;
-            log.scrollTop = log.scrollHeight;
-        }
-        function debug(message){
-            if (debug_mode) logIt(message);
-        }
         c.width=512;c.height=512;
         var cx=c.getContext('2d');
         var command, params;
@@ -143,12 +172,9 @@
             command_history.push(thecommand);
             logIt('<a onclick="if (i.value=='+"''" +') {i.value=command_history[' + (command_history.length - 1) + '];}" class=command_history style="">'+ htmlescape(thecommand) +'</span>' );
             execcommand(thecommand);
-
             if (saveLast) last_run_command=thecommand;
-
-    //        execcommand('info',false);
-            
         }
+
         function execcommand(cmdline,save){
             if (save == undefined) 
                 saveLast = true; 
@@ -175,38 +201,6 @@
             return curparam;
         }
 
-        function extractblock_multi(params,startstring,endstring){
-              var i, count,endrange_i;
-              for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
-                  if (startstring == params[i]) count++; 
-                  if (endstring == params[i]) count--; 
-              }
-              if (count!=0){ throw ("NO matching "+endstring)};  
-              
-              var extracted=params.slice(0,i - 1);
-              params.splice(0,i);
-              return extracted;
-        }
-        function extractblock_single(params,startstring,endstring){
-              var endrange_i = params.indexOf(endstring);
-              if (endrange_i==-1){ throw ("NO matching "+endstring) }   
-              var extracted=params.slice(0,endrange_i);
-              //if (extracted.indexOf(startstring)!=-1){ throw ("Nesting not allowed") }   
-              params.splice(0,endrange_i+1);
-              return extracted;
-        }
-
-        var vars={
-        };
-
-        var lists={
-        };
-
-        var userfunctions={
-        }
-
-        var generated_code={
-        };
 
         var functions={
             'func:sin':{run:function(params) {
