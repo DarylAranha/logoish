@@ -29,20 +29,50 @@
                 content:'>';
                 color:#999;
             }
+            #log{
+                height:7em; 
+                margin: 0.3em; 
+                padding: 1em; 
+                overflow: auto; 
+                font-size: 0.8em; 
+                line-height: 1.1em; 
+                border: 1px solid lightgray; 
+                border-radius: 0.5em;
+            }
+            #c{
+                width:512px; 
+                height:512px;
+                margin:5px; 
+                border:1px solid black;
+                box-shadow: 0px 0px 4px 4px gray;
+                display: inline-block;
+            }
+            #playtable{
+                display: inline-block; 
+                margin: .2em;
+                margin-top: 0;
+            }
+            #command{
+                box-shadow: 0px 0px 6px -1px; 
+                height:480px;
+                width:500px;
+                border: 1px double darkgray; 
+                border-radius: 0.4em; 
+                display:inline-block; 
+                vertical-align:bottom;
+            }
 
         </style>
     </head>
     <body style="margin:2px; padding:2px;">
-        <div id="log" style="height:7em; margin: 0.3em; padding: 1em; overflow: auto; font-size: 0.8em; line-height: 1.1em; border: 1px solid lightgray; border-radius: 0.5em">Log: </div>
-        <div style="display: inline-block; margin: .2em;margin-top: 0; ">
-        <canvas height="512" width="512" id="c" style="width:512px; height:512px; margin:5px; border:1px solid black; box-shadow: 0px 0px 4px 4px gray; display: inline-block"></canvas>
+        <div id="log">Log: </div>
+        <div id=playtable style="">
+            <canvas height="512" width="512" id="c" ></canvas>
             <div style="display:inline-block">
-            <input onclick="executecommand();" value="Run" type="button"><br>
-            <textarea tabindex="1" name="command" id="command" style="box-shadow: 0px 0px 6px -1px; height:480px;width:500px;border: 1px double darkgray; border-radius: 0.4em; display:inline-block; vertical-align:bottom;" placeholder="Type command(s) here. Press Control+Enter to Run. Type help for a list of commands"></textarea>
-            <!--<input type=text name=bigcommand id=bigcommand>-->
-            <div>
-        
-    
+                <input onclick="executecommand();" value="Run" type="button"><br>
+                <textarea tabindex="1" name="command" id="command" placeholder="Type command(s) here. Press Control+Enter to Run. Type help for a list of commands"></textarea>
+            </div>
+        </div>
     <script>
         Array.prototype.split=function(seperator){
                                 data=this.slice();
@@ -749,7 +779,7 @@
                                         }
                                     }
                                     helptext+='<h4>Functions</h4>'+Object.keys(functions).map(function(x) {return x.split(':')[1]}).join(',');
-                                    helptext+="Examples: use <code>listexamples</code> and <code>showexample examplename</code> to go through inbuilt examples. They should give you a fair idea of how to write logoish programs. \nRemember this is pre-alpha stuff. Syntax subject to change.\nAnd hey! Don't forget to 'pendown' first!";
+                                    helptext+="<br><h4>Examples</h4> use <code>listexamples</code> and <code>showexample examplename</code> to go through inbuilt examples. They should give you a fair idea of how to write logoish programs. \nRemember this is pre-alpha stuff. Syntax subject to change.\nAnd hey! Don't forget to 'pendown' first!";
                                 } else {
                                     helptext=getHelp(topic);
                                 }
@@ -784,28 +814,8 @@
             }
             return false;
         }
-        examples={
-            'example:sinrect':'set t 1 set r 1 clear goto 256 56 color black angle 0 penup rpt 36 incr t 6 set r mul sin t 10 pendown rpt 4 fwd r right 90 endrpt penup right 10 fwd 20 endrpt',
-            'example:randomswirls':'set r 20 set nextr 0 pendown angle 0 clear goto 200 100 rpt 12 angle 0 right nextr incr nextr 30 set r 0 set d mul rnd 3 rpt 100 fwd d incr r .2 right r fwd 1 endrpt endrpt',
-            'example:mirrorframe':'clear angle 0 goto 200 40 pendown color black rpt 20 rpt 10 fwd 2 right 7 endrpt rpt 7 fwd 5 right 7 endrpt rpt 10 fwd 2 right 7 endrpt rpt 9 fwd 2 right 12 endrpt fwd 10 rpt 10 fwd 2 left 1 endrpt left 160 rpt 20 right 9 fwd 1 endrpt  rpt 8 right 5.3 fwd 1 endrpt right 28.5 penup fwd 50 pendown endrpt goto 175 100 rpt 80 right 4.5 fwd 7.7 endrpt',
-            'example:chandelier':'clear angle 30 rpt 36 goto 256 256 rpt 4 color red rpt 30 fwd 2 right 3 endrpt color white fwd 20 endrpt right 10 endrpt',
-            'example:shadesofgray':'clear angle 0 goto 100 0 color black set r 0 rpt 256 fwd 100 right 90 fwd 1 right 90 fwd 100 left 90 fwd 1 left 90 incr r 1 color rgb r r r endrpt',
-            'example:rain':'clear rpt 230 set size mul rnd 2 set c floor sub 255 mul size 128 color rgb c c c goto mul rnd 500 mul rnd 500 angle 65 fwd mul 10 size penup back mul size 10 right 30 pendown fwd mul size 10 rpt 15 fwd mul size .7 left 15 endrpt endrpt',
-            'example:thread':'set r 20 set nextr 0 pendown angle 0 clear goto 200 100 rpt 12 angle 0 right nextr incr nextr 30 set r 0 set d mul rnd 3 rpt 20 fwd d incr r .2 right r fwd 1 endrpt endrpt',
-            'example:grass':'clear set cy 0 pendown rpt 150 angle -90 goto cy 512 incr cy mul 5 rnd set cx 0 rpt 40 color rgb cx add cx 100 cx incr cx 6 right sub mul rnd 5 2.5 fwd 6 endrpt incr cy 1 endrpt',
-            'example:elephanttrunk':'clear goto 256 100 color black pendown set a 1 anim 160 20 goto 100 0 angle 0 clear decr a 2 set b sin a rpt 54 incr b .04 fwd 100 right sub add mul sin a 5 89 mul b b fwd 4 right 90 fwd 100 left 90 fwd 4 left 90 endrpt endanim',
-            'example:rainagain':'anim 100 20 clear rpt 80 set size mul rnd 2 set c floor sub 255 mul size 128 color rgb c c c goto mul rnd 500 mul rnd 500 angle 65 fwd mul 10 size penup back mul size 10 right 30 pendown fwd mul size 10 rpt 15 fwd mul size .7 left 15 endrpt endrpt endanim',
-            'example:sinrectagain':'set r 1 set rr 1 set t 1.5 anim 90 20 incr rr .1 clear goto 256 56 color black angle 0 penup incr t 3 set r mul sin t 10 rpt 36 pendown rpt 4 fwd r right 90 endrpt penup right rr fwd 20 endrpt endanim',
-            'example:growswirls':'set rr 1 anim 40 80 incr rr 2 set r 20  set nextr 0 pendown angle 0 clear goto 200 100 rpt 7 angle 0 right nextr incr nextr 30 set r 0 set d mul rnd 3 rpt rr fwd d incr r .2 right r fwd 1 endrpt endrpt endanim',
-            'example:scribble':"clear\npendown\nangle 0\nset i 0\nanim 60 50\n  goto 256 256\n  rpt 10\n     set ang mul rnd 5\n     set d add mul rnd 3 .2\n     rpt 60\n       incr i 2\n       set c ceil mul sin i 256\n       color rgb c c c\n       fwd d\n       right ang\n     endrpt\n  endrpt\nendanim",
-            'example:smiley':"clear pendown goto 256 100\nangle 0\nanim ( 40 , 50 )\n  fwd 10\n  right 9\n nextanim 20 30\n  goto 240 130\n endpreanim\n  fwd 2\n  right 18\n nextanim 20 30\n  goto 280 130\n endpreanim\n  fwd 2\n  right 18\n nextanim 20 30\n  goto 240 200\n  angle 90\n endpreanim\n  fwd 2\n  left 8\nendanim",
-            'example:different_metamorphosis':"setlist message watch till the end endlist\n\nsetlist cc red green endlist\n\nset ddd 0\nanim 90 30\n set d1 4\n set d2 3\n incr ddd .3\n set dd ddd \n\n clear pendown goto 256 256\n color pickfrom cc\n angle 0\n set d 0\n rpt ( 40 ) {\n    incr d dd ;\n    fwd [ sub d1 mul sin d d1 ] ;\n    right 9 ;\n endrpt }\n color pickfrom cc\n rpt ( 40 )\n    incr d dd\n    fwd ( sub d2 mul , sin d d2 )\n    right 9\n endrpt\n color pickfrom cc\n rpt ( 40 )\n    incr d dd\n    fwd sub d1 mul sin d d1\n    left 9\n endrpt\n\n color pickfrom cc\n rpt ( 40 )\n    incr d dd\n    fwd sub d2 mul sin d d2\n    left 9\n endrpt\nendanim"
-  };
-
     </script>
+    <script src=examples.js></script>
 
-</div>
-</div>
-</div>
 </body>
 </html>
