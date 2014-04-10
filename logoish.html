@@ -190,11 +190,11 @@
             if (!isNaN(curparam)) {
                 return curparam;
             }
-            var varname='vars:'+curparam;
+            var varname=':'+curparam;
             if (vars.hasOwnProperty(varname)) {
                 return vars[varname];
             }             
-            var varname='func:'+curparam;
+            var varname=':'+curparam;
             if (functions.hasOwnProperty(varname)) {
                 return functions[varname].run(params);
             }
@@ -203,8 +203,9 @@
 
 
         var functions={
-            'func:sin':{run:function(params) {
-                    return (Math.sin(piBy180 * parseFloat(evaluate(params))));
+        /* trignometric functions */
+            ':sin':{run:function(angle) {
+                    return (Math.sin(piBy180 * angle));
                 },
                 help:'Trignometric sine function',
                 shorthelp:'Trignometric sine function',
@@ -219,8 +220,8 @@
                     type:'float'
                 }
             },
-            'func:cos':{run:function(params) { 
-                    return (Math.cos(piBy180 * parseFloat(evaluate(params))));
+            ':cos':{run:function(angle) { 
+                    return (Math.cos(piBy180 * angle));
                 },
                 help:'Trignometric cosine function',
                 shorthelp:'Trignometric cosine function',
@@ -236,8 +237,8 @@
                 }
 
             },
-            'func:tan':{run:function(params) {
-                    return (Math.tan(piBy180 * parseFloat(evaluate(params))));
+            ':tan':{run:function(angle) {
+                    return (Math.tan(piBy180 * angle));
                 },
                 help:'Trignometric tangent function',
                 shorthelp:'Trignometric tangent function',
@@ -253,8 +254,8 @@
                 }
 
             },
-            'func:asin':{run:function(params) {
-                    return (Math.asin(parseFloat(evaluate(params))* 180/Math.PI ));
+            ':asin':{run:function(asin) {
+                    return (Math.asin(asin *180/Math.PI));
                 },
                 help:'Trignometric arc sine function',
                 shorthelp:'Trignometric arc sine function',
@@ -271,8 +272,8 @@
                 }
 
             },
-            'func:acos':{run:function(params) {
-                    return (Math.acos(parseFloat(evaluate(params))* 180/Math.PI ));
+            ':acos':{run:function(acos) {
+                    return (Math.acos(acos)* 180/Math.PI );
                 },
                 help:'Trignometric arc cosine function',
                 shorthelp:'Trignometric arc cosine function',
@@ -288,8 +289,8 @@
                 }
 
             },
-            'func:atan':{run:function(params) {
-                    return (Math.atan(parseFloat(evaluate(params))* 180/Math.PI ));
+            ':atan':{run:function(atan) {
+                    return (Math.atan(atan)* 180/Math.PI );
                 },
                 help:'Trignometric arctangent function',
                 shorthelp:'Trignometric arctangent function',
@@ -305,8 +306,9 @@
                 }
 
             },
-            'func:pickfrom':{run:function(params) {
-                    var thelist=lists['lists:'+params.shift()];
+            ':pickfrom':{run:function(listname) {
+
+                    var thelist=lists[':'+listname];
                     return thelist.data[thelist.index++%thelist.data.length];
                 },
                 help:'Picks an item from a predefined list. Wraps around after the last item',
@@ -323,32 +325,118 @@
                 }
 
             },
-            'func:add':{run:function(params) {
-                    return (parseFloat(evaluate(params)) + parseFloat(evaluate(params)));
+
+            /* simple arithmetic */
+            ':add':{run:function(num1,num2) {
+                    return (num1+num2);
+                },
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'(augend) first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'(addend) second number',
+                        type:'float'
+                    }
+                },
+                returns:{
+                    help:'the sum of the two numbers',
+                    type:'float'
                 }
+
+
             },
-            'func:sub':{run:function(params) {
-                    return (parseFloat(evaluate(params)) - parseFloat(evaluate(params)));
+            ':sub':{run:function(num1-num2) {
+                    return (num1-num2);
+                },
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'(subtrahend) first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'(minuend) second number',
+                        type:'float'
+                    }
+                },
+                returns:{
+                    help:'the different of the two numbers',
+                    type:'float'
                 }
+
             },
-            'func:mul':{run:function(params) {
-                    return (parseFloat(evaluate(params)) * parseFloat(evaluate(params)));
+            ':mul':{run:function(num1,num2) {
+                    return (num1*num2);
+                },
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'(multiplicand) first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'(multiplier) second number',
+                        type:'float'
+                    }
+                },
+                returns:{
+                    help:'the product of the two numbers',
+                    type:'float'
                 }
+
             },
-            'func:div':{run:function(params) {
-                    return (parseFloat(evaluate(params)) / parseFloat(evaluate(params)));
+            ':div':{run:function(num1-num2) {
+                    return (num1/num2);
+                },
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'(dividend) first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'(divisor) second number',
+                        type:'float'
+                    }
+                },
+                returns:{
+                    help:'the quotient of the two numbers',
+                    type:'float'
                 }
+
             },
-            'func:mod':{run:function(params) {
-                    return (parseFloat(evaluate(params)) % parseFloat(evaluate(params)));
+            ':mod':{run:function(num1,num2) {
+                    return (num1%num2);
+                },
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'(dividend) first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'(divisor) second number',
+                        type:'float'
+                    }
+                },
+                returns:{
+                    help:'the remainder (mudolus) after the division',
+                    type:'float'
                 }
+
             },
-            'func:abs':{run:function(params) {
-                    return (Math.abs(parseFloat(evaluate(params))));
-                }
-            },
-            'func:rgb':{run:function(params) {
-                    return ('rgb('+evaluate(params) + ',' +evaluate(params) + ','+evaluate(params) + ')');
+
+            /* color functions */
+            ':rgb':{run:function(red, green, blue) {
+                    return ('rgb('+ red + ',' + green + ','+ blue  + ')');
                 },
                 help:'Returns a css representation of the color formed from red green and blue specified, mostly usefull with the "color" command. Usefull for generating the representation from values derived computationaly',
                 shorthelp:'css representation of the color from red, green and blue values',
@@ -375,8 +463,8 @@
                 }
 
             },
-            'func:rgba':{run:function(params) {
-                    return ('rgb('+evaluate(params) + ',' +evaluate(params) + ',' +evaluate(params) + ','+evaluate(params) + ')');
+            ':rgba':{run:function(red, gree, blue, alpha) {
+                    return ('rgb('+ red + ',' + green  + ',' + blue + ','+ alpha + ')');
                 },
                 help:'Returns a css representation of the color formed from red, green, blue and alpha values, mostly usefull with the "color" command. Usefull for generating the representation from values derived computationaly',
                 shorthelp:'css representation of the color from red, green, blue and alpha values',
@@ -407,8 +495,8 @@
                     type:'color'
                 }
             },
-            'func:hsl':{run:function(params) {
-                    return ('rgb('+evaluate(params) + ',' +evaluate(params) + ','+evaluate(params) + ')');
+            ':hsl':{run:function(hue,saturation, luminosity) {
+                    return ('hsl('+ hue + ',' + saturation + ','+ luminosity + ')');
                 },
                 help:'Returns a css representation of the color formed from hue, saturation and luminosity values, mostly usefull with the "color" command. Usefull for generating the representation from values derived computationaly',
                 shorthelp:'css representation of the color from hue, saturation and luminosity values',
@@ -435,8 +523,8 @@
                 }
 
             },
-            'func:hsla':{run:function(params) {
-                    return ('rgb('+evaluate(params) + ',' +evaluate(params) + ',' +evaluate(params) + ','+evaluate(params) + ')');
+            ':hsla':{run:function(hue, saturation, luminosity, alpha) {
+                    return ('hsla('+ hue  + ',' + saturation + ',' + luminosity + ',' + alpha + ')');
                 },
                 help:'Returns a css representation of the color formed from hue, saturation and luminosity values, mostly usefull with the "color" command. Usefull for generating the representation from values derived computationaly',
                 shorthelp:'css representation of the color from hue, saturation and luminosity values',
@@ -469,7 +557,9 @@
 
 
             },
-            'func:rnd':{run:function(params) {
+
+            /* play with number and their formats */
+            ':rnd':{run:function() {
                     return (Math.random());
                 },
                 help:'returns a random number between 0 and 1',
@@ -479,9 +569,26 @@
                     type:'float'
                 }
             },
-            'func:ceil':{run:function(params) {
-                    return (Math.ceil(parseFloat(evaluate(params))));
+            ':abs':{run:Math.abs,
+                help:'Adds two numbers',
+                shorthelp:'Adds two number',
+                params:{
+                    num1:{
+                        help:'first number',
+                        type:'float'
+                    },
+                    num2:{
+                        help:'second number',
+                        type:'float'
+                    }
                 },
+                returns:{
+                    help:'the sum of the two numbers',
+                    type:'float'
+                }
+
+            },
+            ':ceil':{run:Math.ceil
                 help:'returns the ceiling of the given float. (Integer next to the float, unless itself an integer)',
                 shorthelp:'returns the ceiling of the given float',
                 params:{
@@ -496,9 +603,7 @@
                 }
 
             },
-            'func:floor':{run:function(params) {
-                    return (Math.floor(parseFloat(evaluate(params))));
-                },
+            ':floor':{run: Math.floor
                 help:'returns the floor of the given float. (Integer previous to the float, unless itself an integer)',
                 shorthelp:'returns the floor of the given float',
                 params:{
@@ -513,9 +618,7 @@
                 }
 
             },
-            'func:round':{run:function(params) {
-                    return (Math.round(parseFloat(evaluate(params))));
-                },
+            ':round':{run: Math.round
                 help:'returns the rounded integer of the given float. (Integer nearest to the float)',
                 shorthelp:'returns the round integer of the given float',
                 params:{
@@ -529,7 +632,9 @@
                     type:'integer'
                 }
             },
-            'func:curX':{run:function(params) {
+
+            /* pen functions */
+            ':curX':{run:function() {
                     return (pen.x);
                 },
                 help: 'returns the current x coordinate of the pen',
@@ -540,7 +645,7 @@
                     type: 'float',
                 }
             },
-            'func:curY':{run:function(params) {
+            ':curY':{run:function() {
                     return (pen.y);
                 },
                 help: 'returns the current y coordinate of the pen',
@@ -552,7 +657,7 @@
                 }
 
             },
-            'func:curColor':{run:function(params) {
+            ':curColor':{run:function() {
                     return (pen.y);
                 },
                 help: 'returns the current color of the pen',
@@ -564,7 +669,7 @@
                 }
 
             },
-            'func:curWidth':{run:function(params) {
+            ':curWidth':{run:function() {
                     return (pen.width);
                 },
                 help: 'returns the current width of the pen',
@@ -576,7 +681,7 @@
                 }
 
             },
-            'func:curAngle':{run:function(params) {
+            ':curAngle':{run:function() {
                     return (pen.angle);
                 },
                 help: 'returns the current angle of the pen',
@@ -588,24 +693,23 @@
                 }
             },
         };
-        var commands={'pendown':{run: function(params){
+
+        var commands={':pendown':{run: function(){
                                         pen.down=true;
                                       },
                                 'help':'Make the pen touch the paper. The commands "fwd" and "back" will henceforth make the items draw.',
                                 'shorthelp':'Make the pen touch the paper.',
                                 'params':{}
                                 },
-                      'penup':{run: function(params){
+                      ':penup':{run: function(){
                                         pen.down=false;
                                       },
                                 'help':'Make the pen not touch the paper. The commands "fwd" and "back" will henceforth only make the pen move.',
                                 'shorthelp':'Make the pen not touch the paper.',
                                 'params':{}
                                 },
-                      'angle':{run: function(params) {
-                                        var angle=evaluate(params);
-                                        pen.angle=getNum(angle);
-                                        pen.angle%=360;
+                      ':angle':{run: function(angle) {
+                                        pen.angle=angle%360;
                                     },
                                 'help':'Sets the angle in which to move the pen',
                                 'shorthelp':'Sets the angle in which to move the pen',
@@ -613,8 +717,8 @@
                                     'angle':{help: 'The angle in degrees ',type:'angle'},
                                  }
                            },
-                      'width':{run: function(params) {
-                                        pen.width=evaluate(params);
+                      ':width':{run: function(width) {
+                                        pen.width=width;
                                     },
                                 'help':'Sets the linewidth of the pen',
                                 'shorthelp':'Sets the linewidth of the pen',
@@ -622,9 +726,8 @@
                                     'width':{help: 'width in pixels',type:'pixels'},
                                  }
                            },
-                      'right':{run: function(params) {
-                                    var angle=evaluate(params);
-                                    pen.angle+=getNum(angle);
+                      ':right':{run: function(angle) {
+                                    pen.angle+=angle;
                                     pen.angle%=360;
                                 },
                                 'help':'Offsets the angle to the right in which to move the pen',
@@ -634,31 +737,28 @@
                                  }
 
                        },
-                       'left':{run: function(params) {
-                                    var angle=evaluate(params);
-                                    pen.angle-=getNum(angle);
+                       ':left':{run: function(angle) {
+                                    pen.angle-=angle;
                                     pen.angle%=360;
                                 },
                                 'help':'Offsets the angle to the left in which to move the pen',
                                 'shorthelp':'Offsets the angle to the left in which to move the pen',
                                 'params':{'angle': {help:'The angle in degrees',type:'angle'}}
                         },
-                        'fwd':{run: function(params) {
+                        ':fwd':{run: function(distance) {
                                    if (pen.down){
-                                       var d = evaluate(params);
                                        cx.beginPath();
                                        cx.moveTo(getNum(pen.x), getNum(pen.y));
                                        cx.strokeStyle = pen.color;
                                        cx.lineWidth = pen.width;
-                                       pen.x = getNum(pen.x) + getNum(Math.cos(pen.angle*piBy180) * d);
-                                       pen.y = getNum(pen.y) + getNum(Math.sin(pen.angle*piBy180) * d);
+                                       pen.x = getNum(pen.x) + getNum(Math.cos(pen.angle*piBy180) * distance);
+                                       pen.y = getNum(pen.y) + getNum(Math.sin(pen.angle*piBy180) * distance);
                                        cx.lineTo(getNum(pen.x), getNum(pen.y));
                                        cx.closePath();
                                        cx.stroke();
                                    } else {
-                                       var d = evaluate(params);
-                                       pen.x = getNum(pen.x) + getNum(Math.cos(pen.angle*piBy180) * d);
-                                       pen.y = getNum(pen.y) + getNum(Math.sin(pen.angle*piBy180) * d);
+                                       pen.x = getNum(pen.x) + getNum(Math.cos(pen.angle*piBy180) * distance);
+                                       pen.y = getNum(pen.y) + getNum(Math.sin(pen.angle*piBy180) * distance);
                                        cx.moveTo(pen.x, pen.y);
                                    }
                                },
@@ -666,27 +766,32 @@
                                 'help':'Moves the pen forward n pixels in the angle of the pen',
                                 'params':{'distance':{help: 'The distance in pixel by which to move the pen from its current position',type:'pixels'}}
                         },
-                        'back':{run: function(params){commands['fwd'].run([-evaluate(params)])},
+                        ':back':{run: function(distance){commands[':fwd'].run(-distance)},
                                 'shorthelp':'Moves the pen backward by n pixels',
                                 'help':'Moves the pen backward n pixels in the angle of the pen from its currnet position',
-                                'params':{'distance': {help: 'The distance in pixel by which to move the pen from its current position',type:'pixels'}}
+                                'params':{
+                                    'distance': {
+                                        help: 'The distance in pixel by which to move the pen from its current position',
+                                        type:'pixels'
+                                     }
+                                 }
                                },
-                        'goto':{run: function(params) {
-                                     pen.x = getNum(evaluate(params));
-                                     pen.y = getNum(evaluate(params));
+                        ':goto':{run: function(distanceX,distanceY) {
+                                     pen.x = distanceX);
+                                     pen.y = distanceY);
                                      cx.moveTo(pen.x,pen.y);
                                  },
                                 'shorthelp':'Moves the pen to the given posisiton without drawing anything',
-                                'help':'Moves the pen forward n pixels in the angle of the pen',
+                                'help':'Moves the pen to the given position without drawing anything',
                                 'params':{'distanceX': {help:'X part of the co ordinate',type:'pixels'},
                                           'distanceY': {help:'Y part of the co ordinate',type:'pixels'}
                                          }
 
                         },
-                        'info':{run: function(params) {
+                        ':info':{run: function() {
                                      logIt('<b>Pen:</b> '+JSON.stringify(pen));
                                      logIt('<b>Variables:</b>'+JSON.stringify(vars));
-                                     logIt('<b>lists:</b>'+JSON.stringify(lists));
+                                     logIt('<b>:</b>'+JSON.stringify(lists));
                                      saveLast=false;
                                 },
                                 'shorthelp':'Prints different properties of the pen and environment',
@@ -694,29 +799,33 @@
                                 'params':{}
 
                         },
-                        'color':{run: function(params) {
-                                    pen.color = evaluate(params);
+                        ':color':{run: function(color) {
+                                    pen.color = color;
                                 },
                                 'help':'Sets the ink color of the pen',
                                 'shorthelp':'Sets the ink color of the pen',
-                                'params':{ 'color': {help: 'the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.',type:'color'}}
+                                'params':{ 
+                                    'color': {
+                                        help: 'the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.',
+                                        type:'color'
+                                        }
+                                     }
 
                         },
-                        'clear':{run: function(params) {
+                        ':clear':{run: function() {
+                                var oldFillStyle=cx.fillStyle;
                                 cx.fillStyle='white';
                                 cx.fillRect(0,0,c.width,c.height);
+                                cx.fillStyle=oldFillStyle;
                             },
                                 'help':'clears the screen',
                                 'shorthelp':'clears the screen',
                                 'params':{}
 
                         },
-                        'rpt': {run: function(p) {
-                                    var extracted=extractblock_multi(p,'rpt','endrpt');
-                                    
-                                    var times = evaluate(extracted); 
+                        ':rpt': {run: function(times,commands) {
                                     for (var i = 0; i < times; i++){
-                                        execit(extracted.slice());
+                                        execit(commands.slice());
                                     }
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',
@@ -737,13 +846,12 @@
                                   }
 
                         },
-                        'save':{run: function(params){
+                        ':save':{run: function(name){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
                                         if (currentlist == null) currentlist=[];
-                                        var name=params.shift();
-                                        if (currentlist.indexOf(name) == -1){
-                                            localStorage.setItem('logoish_saved_' + name,last_run_command);
-                                            currentlist.push(name);
+                                        if (currentilst.indexOf(slotname) == -1){
+                                            localStorage.setItem('logoish_saved_' + slotname,last_run_command);
+                                            currentlist.push(slotname);
                                             localStorage.setItem('logoish_saved',JSON.stringify(currentlist));
                                             logIt('saved');
                                         } else {
@@ -754,15 +862,18 @@
                                 
                                 'help':'Saves the last command to given slot',
                                 'shorthelp':'Saves the last command to the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to save. No overwriting allowed.',type:'stringasis' }}
+                                'params':{'slotname':{
+                                        help: 'The alphanumeric name of the slot to save. No overwriting allowed.',
+                                        type:'stringasis' 
+                                        }
+                                    }
 
                                },
-                        'show':{run: function(params){
+                        ':show':{run: function(slotname){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
                                         if (currentlist == null) currentlist=[];
-                                        var name=params.shift();
                                         if (currentlist.indexOf(name) != -1){
-                                            i.value=(localStorage.getItem('logoish_saved_' + name));
+                                            i.value=(localStorage.getItem('logoish_saved_' + slotname));
                                         } else {
                                             logIt('ERROR: No such item saved');
                                         }
@@ -771,21 +882,25 @@
                                  dontclear:true,
                                 'shorthelp':'Show a saved commmand',
                                 'help':'Retrieve and populate the command prompt with a saved command, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the slot to show the command from',type:'stringasis' }}
+                                'params':{
+                                    'slotname':{
+                                        help: 'The name of the slot to show the command from',
+                                        type:'stringasis' 
+                                    }
+                                 }
 
                                 },
-                        'last':{run: function(params){
+                        ':last':{run: function(){
                                       i.value=last_run_command;
                                       saveLast=false;
                                       },
                                  dontclear:true,
                                 },
-                        'delete': {run: function(params){
+                        ':delete': {run: function(slotname){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
                                         if (currentlist == null) currentlist=[];
-                                        var name=params.shift();
-                                        if (currentlist.indexOf(name) != -1){
-                                            localStorage.removeItem('logoish_saved_' + name);
+                                        if (currentlist.indexOf(slotname) != -1){
+                                            localStorage.removeItem('logoish_saved_' + slotname);
                                         } else {
                                             logIt('ERROR: No such item saved');
                                         }
@@ -793,10 +908,15 @@
                                    },
                                 'shorthelp':'Deletes the command from the given slot',
                                 'help':'Deletes the command from the given slot',
-                                'params':{'slotname':{help: 'The alphanumeric name of the slot to delete',type:'stringasis' }}
+                                'params':{
+                                    'slotname':{
+                                        help: 'The alphanumeric name of the slot to delete',
+                                        type:'stringasis' 
+                                        }
+                                 }
 
                                 },
-                        'saved': {run: function(params){
+                        ':saved': {run: function(){
                                         logIt(JSON.parse(localStorage.getItem('logoish_saved')));
                                         saveLast=false;
                                       },
@@ -804,40 +924,46 @@
                                 'help':'Lists the name of saved command slots',
                                 'params':{}
                                 },
-                        'set':{run: function(params){
-                                        var name = params.shift();
-                                        if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        vars['vars:'+ name]=evaluate(params);
+                        ':set':{run: function(varname,value){
+                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        vars[':'+ varname]=value;
                                     },
                                 'help':'sets the value of a variable to the given value',
                                 'shorthelp':'sets the value of a variable',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the variable to set. Overwriting allowed. Note: cannot use function names as variables',type:'varname' },
-                                            'value':{help: 'The value to set.',type:'any' }
+                                            'varname':{
+                                                help: 'The alphanumeric name of the variable to set. Overwriting allowed. Note: cannot use function names as variables',
+                                                type:'varname' },
+                                            'value':{
+                                                help: 'The value to set.',
+                                                type:'any' 
+                                            }
                                          }
                                },
-                        'incr':{run: function(params){
-                                        var name = params.shift();
-                                        var val=evaluate(params);
-                                        var varname='vars:'+name;
+                        ':incr':{run: function(varname, value){
+                                        var variablename=':'+varname;
 
-                                        if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        vars[varname]= parseFloat(vars[varname]) + parseFloat(val);
+                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        vars[variablename]= parseFloat(vars[variablename]) + value;
                                     },
                                 'help':'increases the value of a variable by given value',
                                 'shorthelp':'increases the value of a variable by given value',
                                 'params':{
-                                            'varname':{help: 'The alphanumeric name of the variable to increase. Note: cannot use function names as variables',type:'varname' },
-                                            'value':{help: 'The value to increase by.',type:'any'}
+                                            'varname':{
+                                                help: 'The alphanumeric name of the variable to increase. Note: cannot use function names as variables',
+                                                type:'varname' },
+                                            'value':{
+                                                help: 'The value to increase by.',
+                                                type:'float'
+                                             }
                                          }
                                },
-                        'decr':{run: function(params){
-                                        var name = params.shift();
+                        ':decr':{run: function(varname, value){
                                         var val=evaluate(params);
-                                        var varname='vars:'+name;
+                                        var variablename=':'+varname;
 
-                                        if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        vars[varname]= parseFloat(vars[varname]) - parseFloat(val);
+                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        vars[variablename]= parseFloat(vars[variablename]) - parseFloat(value);
                                     },
                                 'help':'decreases the value of a variable by given value',
                                 'shorthelp':'decreases the value of a variable by given value',
@@ -846,11 +972,10 @@
                                             'value':{help: 'The value to decrease by.', type:'any' }
                                          }
                                },
-                        'setlist':{run: function(params){
-                                        var name = params.shift();
-                                        if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        if (vars.hasOwnProperty('vars:'+name)) logIt(name + ' is a function. ERROR Cannot use it as a variable');
-                                        lists['lists:'+ name]={data:extractblock_single(params,'setlist','endlist'), index:0};
+                        ':setlist':{run: function(listname,list){
+                                        if (functions.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
+                                        if (vars.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
+                                        lists[':'+ listname]={data:extractblock_single(params,'setlist','endlist'), index:0};
                                     },
                                 'help':'Creates a list of items. Use the pickfromlist function.',
                                 'shorthelp':'Creates a list of items',
@@ -869,15 +994,11 @@
                                              }
                                          }
                                },
-                        'anim':{run: function(params){
-                                        var endsat = params.indexOf('endanim');
+                        ':anim':{run: function(times,delay,functions, params){
                                         var animating=false;
                                         var animdone=false;
                                         var counter;
                                         var curanim=[];
-                                        var times,delay;
-                                        if (endsat == -1) logIt('ERROR: animation does not end!'); 
-                                        var extracted = params.slice(0,endsat).split('nextanim'); //also prevent the params from geting "shift"ed off for the next iteration 
 
                                         var anim_hungry=true;
                                         var animslice=function (){ 
@@ -901,7 +1022,6 @@
                                                     execit(preanim);
                                                     curanim.splice(0,preanimend+1);
                                                 }
-
                                                 anim_hungry=false;
                                             }
 
@@ -942,12 +1062,11 @@
                                              }
                                          }
                                },
-                        'resetlist':{run: function(params){
-                                        var name = params.shift();
-                                        if (vars.hasOwnProperty('vars:'+name)) logIt(name + ' is not a list Cannot reset');
-                                        if (functions.hasOwnProperty('func:'+name)) logIt(name + ' is not a list Cannot reset');
-                                        if (!lists.hasOwnProperty('lists:'+name)) logIt(name + ' is not a list. Cannot reset');
-                                        lists['lists:'+ name].index=0;
+                        ':resetlist':{run: function(varname){
+                                        if (vars.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (!lists.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list. Cannot reset');
+                                        lists[':'+ varname].index=0;
                                     },
                                 'help':'Resets the index of the list back to the first item in the list',
                                 'shorthelp':'Resets the index of the list back to the first item in the list',
@@ -955,8 +1074,8 @@
                                             'varname':{help: 'The alphanumeric name of the list whose index is to be reset.',type:'varname'},
                                          }
                                },
-                        'evaldisp':{run: function(params){
-                                        logIt(evaluate(params));
+                        ':evaldisp':{run: function(expression){
+                                        logIt(evaluate(expression));
                                     },
                                     shorthelp: 'evaluate and display the result of the function call or variable that follows',
                                     help: 'evaluate and display the result of the function call or variable that follows',
@@ -967,15 +1086,15 @@
                                          }
                                     }
                                },
-                        'listexamples':{run: function(params){
+                        ':listexamples':{run: function(){
                                     logIt(Object.keys(examples).map(function(x){return x.split(':')[1]}));
                                 },
                                 shorthelp:'Show a list of examples.',
                                 help:'Show a list of examples. Use the showexample command to use individual examples',
                                 params:{},
                          },
-                        'showexample':{run: function(params){
-                                        var name='example:'+params.shift();
+                        ':showexample':{run: function(slotname){
+                                        var name='example:'+slotname;
                                         if (Object.keys(examples).indexOf(name) != -1){
                                             i.value=examples[name];
                                         } else {
@@ -990,8 +1109,8 @@
 
                                 
                         },
-                        'comment':{run: function(params){
-                                            extractblock_single(params,'comment','endcomment');
+                        ':comment':{run: function(comment){
+                                        //gulp!
                                   }, 
                                   help: 'anything between "comment" and "endcomment" will be ignored',
                                   shorthelp:'anything between "comment" and "endcomment will" be ignored. But it has to be entered as a seperate command, and cannot come in between parameters of commands' ,
@@ -999,8 +1118,8 @@
                                         comment: {help: 'the comment' , type:'block',parseropts:{blockstart:'comment',blockend:'endcomment'}}
                                     }
                          },
-                        'function':{run: function(params){
-                                    user_functions['func:'+evaluate(params)].run();
+                        ':function':{run: function(name){
+                                    //TODO: IMplement
                                 },
                                 help:'register user defined functions',
                                 shorthelp:'register user defined functions',
@@ -1019,13 +1138,17 @@
                                 }
                         },
 
-                        'help': {
-                            run:function(params){
+                        ':help': {
+                            run:function(topic){
+                                function get_topic_object(topic){
+                                    if (commands.hasOwnProperty(topic) return commands[topic];
+                                    if (functions.hasOwnProperty(topic) return functions[topic];
+                                }
                                 function hasShortHelp(topic){
-                                    return commands.hasOwnProperty(topic) && (commands[topic].shorthelp != undefined);
+                                    return (get_topic_object(topic).shorthelp != undefined);
                                 }
                                 function hasHelp(topic){
-                                    return commands.hasOwnProperty(topic) && (commands[topic].help != undefined);
+                                    return (get_topic_object(topic).help != undefined);
                                 }
                                 function getShortHelp(topic){
                                     if (hasShortHelp(topic)){
@@ -1036,12 +1159,13 @@
                                 }
                                 function getHelp(topic) {
                                     var helptext='';
+                                    var helptopicobj=get_topic_object(topic);
                                     if (hasHelp(topic)) {
-                                        helptext=commands[topic].help;
-                                        if (Object.keys(commands[topic].params).length > 0) {
+                                        helptext=helptopicobj.help;
+                                        if (Object.keys(helptopicobj.params).length > 0) {
                                             helptext+='<h3>Parameters</h3>';
-                                            for (var i in commands[topic].params) {
-                                                helptext+='<b>'+i+'</b>: ' + commands[topic].params[i].help + '<br>' ;
+                                            for (var i in helptopicobj.params) {
+                                                helptext+='<b>'+i+'</b>: ' + helptopicobj.params[i].help + '<br>' ;
                                             }
                                         }
                                        return helptext;
@@ -1050,7 +1174,6 @@
                                     }
 
                                 }
-                                topic = params.shift();
                                 var helptext='';
                                 if (topic == 'all' || topic == undefined) {
                                     for (command in commands){
