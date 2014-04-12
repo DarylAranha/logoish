@@ -18,7 +18,7 @@
             else 
                 return (parseFloat(s));
         }
-
+/*
         function extractblock_multi(params,startstring,endstring){
               var i, count,endrange_i;
               for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
@@ -41,20 +41,181 @@
               return extracted;
         }
 
+*/
+        function extractblock_multi(){
+              var i, count,endrange_i;
+              var params=this.codearray.data;
 
-        knowledge={
-            skipwords:['' , ';' , ',' , '[' , ']' , '(' , ')' , '{' , '}' ],
-
+              for (i = this.codearray.index, count=1; (0 != count) && (i < params.length) ; i++){
+                  if (this.opts.startstring == params[i]) count++; 
+                  if (this.opts.endstring == params[i]) count--; 
+              }
+              if (count!=0){ throw ("NO matching "+endstring)};  
+              var extracted=this.codearray.slice(this.codearray.index,i - 1);
+              this.codearray.index=i+1;
+              return extracted;
         }
+
+        function extractblock_single(){
+              var params=this.codearray.data;
+              var endrange_i = params.indexOf(this.opts.endstring, this.codearray.index);
+              if (endrange_i==-1){ 
+                throw ("NO matching " + endstring + ' at ' + this.codearray.index ); 
+              }   
+              var extracted=params.slice(this.codearray.index,endrange_i);
+              params.splice(this.codearray.index,endrange_i+1);
+              return extracted;
+        }
+
 
         function parseCode(codestr, knowledge){
             var codearray={data:codestr.split(/\s+/),index:0};
             var commandarray=[]; 
-            codearray.data = codearray.data.filter(function (s){return knowledge.skipwords.indexOf(s)!=-1});
-            while(codearray.data.length){
-                if (indexOf(codearray.data[i])){
-
-                };
+            codearray.data = codearray.data.filter(function (s){ return (knowledge.skipwords.indexOf(s)!=-1) });
+            while(codearray.index < codearray.data.length){
+                var fname = ':' + codearray.data[codearray.data.index++];
+                var command = getFun(codearray,fname);
+                if (command)
+                    commandarray.push(command);
+                else
+                    throw ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codestr);
             }
-                
+        }
+
+
+        /* types: 
+            angle,
+            float(max=Infinity,min=-Infinity),
+            
+            pixels,
+            integer(max=Infinity,min=-Infinity),
+
+            list,
+
+            any,
+            color,
+            string,
+
+            varname, //need not be variable
+            stringasis,
+
+            block(blockstart,blockend),
+         */
+
+        function getFun(codearray, fun){
+                if (knowledge.commands.indexOf(fname){
+                    var fun=knowledge.commands[fname];
+                    var command={call:fun.run, params:[], fun.handlesExec};
+                    for (var param in knowledge.commands[fname].params){
+                       command.params.push(parseForEval(codearray, param));
+                    }
+                    return command;
+                } else {
+                    return undefined;
+                }
+        }
+
+        function getFloat(s){
+            if (isNan(s)){
+                return 0;
+            } else {
+                return parseFloat(s);
+            }
+        }
+
+        function getInt(s){
+            if (isNan(s)){
+                return 0;
+            } else {
+                return parseInt(s);
+            }
+        }
+
+        function getVarFloat(){
+            return getFloat(varOrStr(this.s)); 
+        }
+
+        function getVarInt(){
+            return getInt(varOrStr(this.s)); 
+        }
+
+        function varOrStr(){
+            var name=':'+this.s;
+            if (environment.vars.hasOwnProperty(name)){
+                return environment.vars[name]; 
+            } else {
+                return this.s.toString();
+            }
+        }
+        function getList(){
+            var name=':'+this.s;
+            if (environment.lists.hasOwnProperty(name)){
+                return environment.lists[name]; 
+            } else {
+                return [];
+            }
+        }
+        
+
+        function getNextS(codarray){
+            return(codearray.data[codearray.index++]);
+        }
+
+        function asis(o){
+                return ({
+                    call:function(){return (o)},
+                    params:[],
+                    });
+        }
+        
+        function parseForEval(codearray, param){
+             var s = getNextS(codearray);
+             switch(param.type)
+                case 'varname':
+                case 'stringasis': 
+                    asis(s);
+                    break;
+                case 'color':
+                case 'any': 
+                case 'string':
+                    var f = getFun(codearray, s);
+                    if (f) {
+                        return (f);
+                    } else {
+                        return ({call:varOrStr.bind({s:s}), params:[]});
+                    }
+                    break;
+                case 'integer':
+                    if (isNan){
+                        var f = getFun(codeArray, s);
+                        if (f) {
+                            return (f);
+                        } else  {
+                            return ({call:getVarInt.bind({s:s}),params:[]}); 
+                        }
+                    } else {
+                        return (asis(getInt(s));
+                    }
+                    break;
+                case 'pixels':
+                case 'float':
+                    if (isNan(s)){
+                        var f = getFun(codeArray, s);
+                        if (f) {
+                            return (f);
+                        } else  {
+                            return ({call:getVarFloat.bind({s:s,opts:param.parseropts}),params:[]}); 
+                        }
+                    } else {
+                        return (asis(getFloat(s));
+                    }
+                    break;
+                case: 'list':
+                    return ({call:getVarList.bind({s:s}), params:{});
+                    break;
+                case: 'block':
+                    return (asis(extractblock.bind({codearray:codearray,opts:params.parseropts})()));
+                    break;
+
+
         }
