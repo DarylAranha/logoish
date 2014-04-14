@@ -622,8 +622,11 @@
 
                         },
                         ':rpt': {run: function(times,commands) {
+                                    var rptEnv = newEnvironment();
+                                    rptEnviron.parentEnv=environment;
                                     for (var i = 0; i < times; i++){
-                                        execit(commands.slice());
+                                        environment.codePtr=0;
+                                        callCommands(commands, rptEnv);
                                     }
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',

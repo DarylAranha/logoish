@@ -70,6 +70,10 @@
 
         function parseCode(codestr, knowledge){
             var codearray={data:codestr.split(/\s+/),index:0};
+            return parseCodeArray(codearray, knowledge);
+        }
+        function parseCodeArray(codearray, knowledge){
+            
             var commandarray=[]; 
             codearray.data = codearray.data.filter(function (s){ return (knowledge.skipwords.indexOf(s)!=-1) });
             while(codearray.index < codearray.data.length){
@@ -80,6 +84,7 @@
                 else
                     throw ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codestr);
             }
+            return commandarray;
         }
 
 
@@ -100,12 +105,13 @@
             stringasis,
 
             block(blockstart,blockend),
+            codeblock(blockstart, blockend)
          */
 
         function getFun(codearray, fun){
                 if (knowledge.commands.indexOf(fname){
                     var fun=knowledge.commands[fname];
-                    var command={call:fun.run, params:[], fun.handlesExec};
+                    var command={call:fun, params:[]};
                     for (var param in knowledge.commands[fname].params){
                        command.params.push(parseForEval(codearray, param));
                     }
@@ -115,24 +121,32 @@
                 }
         }
 
-        function getFloat(s){
-            if (isNan(s)){
-                return 0;
-            } else {
-                return parseFloat(s);
+        function getInt(s,min,max){
+            var num=0
+            if (!IsNaN(s)){
+                num=parseFloat(s);
             }
+            if (!IsNaN(min)){
+                num=parseFloat(s<min?min:s);
+            if (!IsNaN(max)){
+                num=parseFloat(s>max?max:s);
+            return num;
         }
 
-        function getInt(s){
-            if (isNan(s)){
-                return 0;
-            } else {
-                return parseInt(s);
+        function getInt(s,min,max){
+            var num=0
+            if (!IsNaN(s)){
+                num=parseInt(s);
             }
+            if (!IsNaN(min)){
+                num=parseInt(s<min?min:s);
+            if (!IsNaN(max)){
+                num=parseInt(s>max?max:s);
+            return num;
         }
 
         function getVarFloat(){
-            return getFloat(varOrStr(this.s)); 
+            return getFloat(varOrStr(this.s),this.opts.min, this.opts.max); 
         }
 
         function getVarInt(){
@@ -148,7 +162,7 @@
             }
         }
         function getList(){
-            var name=':'+this.s;
+            var name=':' + this.s;
             if (environment.lists.hasOwnProperty(name)){
                 return environment.lists[name]; 
             } else {
@@ -186,7 +200,7 @@
                     }
                     break;
                 case 'integer':
-                    if (isNan){
+                    if (IsNaN){
                         var f = getFun(codeArray, s);
                         if (f) {
                             return (f);
@@ -199,7 +213,7 @@
                     break;
                 case 'pixels':
                 case 'float':
-                    if (isNan(s)){
+                    if (IsNaN(s)){
                         var f = getFun(codeArray, s);
                         if (f) {
                             return (f);
@@ -216,6 +230,8 @@
                 case: 'block':
                     return (asis(extractblock.bind({codearray:codearray,opts:params.parseropts})()));
                     break;
-
+                case: 'block':
+                    return (parseCodeArr(extractblock.bind({codearray:codearray,opts:params.parseropts})()),knowledge);
+                    break;
 
         }
