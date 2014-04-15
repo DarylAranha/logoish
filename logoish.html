@@ -108,18 +108,17 @@
 
         var last_run_command='';
         var command_history=[];
-        function newEnvironment(){
+        function newEnvironment(commandarray){
                 return {
                     vars:{},
                     lists:{},
                     userfunctions:{},
-                    generated_code:[],
-                    parentEnv:nullr,
+                    commandarray:commandarray,
+                    parentEnv:null,
                     codePtr:0,
                 };
         }
 
-        var environment=newEnvironment();
 
         var execlvl=0;
         var debug_mode=false;

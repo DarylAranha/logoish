@@ -1,6 +1,6 @@
 function callCommands(commandarray, environment){
         
-    while (environment.codePtr<commandarray.length){
+    while (environment.codePtr < commandarray.length){
        var ret = handleCall(commandarray[codePtr], environment);
        environment.codePtr++;
        if (commandarray[codePtr].handlesExec) break;

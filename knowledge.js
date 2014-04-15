@@ -622,10 +622,10 @@
 
                         },
                         ':rpt': {run: function(times,commands) {
-                                    var rptEnv = newEnvironment();
-                                    rptEnviron.parentEnv=environment;
+                                    var rptEnv = newEnvironment(commands);
+                                    rptEnviron.parentEnv = environment;
                                     for (var i = 0; i < times; i++){
-                                        environment.codePtr=0;
+                                        rptEnv.codePtr = 0;
                                         callCommands(commands, rptEnv);
                                     }
                                 },
