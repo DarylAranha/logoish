@@ -143,7 +143,7 @@
             command_history.push(thecommand);
             logIt('<a onclick="if (i.value=='+"''" +') {i.value=command_history[' + (command_history.length - 1) + '];}" class=command_history style="">'+ htmlescape(thecommand) +'</span>' );
             execcommand(thecommand);
-            if (saveLast) last_run_command=thecommand;
+            last_run_command=thecommand;
         }
 
         function execcommand(cmdline,save){
@@ -151,47 +151,11 @@
                 saveLast = true; 
             else 
                 saveLast = save;
-            params = cmdline.split(/\s+/);
-            params = params.filter(function(x){ return (skipwords.indexOf(x) == -1) });
-            execit(params);
+            globalEnv.commandarray=parseCode(cmdline,knowledge);
+            callCommands(globalEnv.commandarray, globalEnv);
+
         }
 
-        function evaluate (params){
-            var curparam=params.shift();
-            if (!isNaN(curparam)) {
-                return curparam;
-            }
-            var varname=':'+curparam;
-            if (vars.hasOwnProperty(varname)) {
-                return vars[varname];
-            }             
-            var varname=':'+curparam;
-            if (functions.hasOwnProperty(varname)) {
-                return functions[varname].run(params);
-            }
-            return curparam;
-        }
-
-
-
-
-        function execit(params){
-            while (params.length > 0){
-                var command = params.shift();
-                try{ 
-                        if (commands.hasOwnProperty(command)){
-                            commands[command].run(params);
-                            if (!commands[command].dontclear) i.value='';
-                        } else {
-                            logIt('Uh oh.. dont know how to do ' + htmlescape(command) + ' If you want to check the contents of a variable or return value of a function, use the "evaldisp" command.');
-                            //params=[];
-                        }
-                } catch(e){
-                    logIt(escape(e));
-                }
-            }
-            return false;
-        }
     </script>
     <script src=examples.js></script>
 

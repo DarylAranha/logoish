@@ -1,5 +1,5 @@
         Array.prototype.split=function(seperator){
-                                data=this.slice();
+                                var data=this.slice();
                                 var i=this.indexOf(seperator);
                                 if (i==-1) {return [data]} ; 
                                 ret=[]; 
@@ -43,8 +43,8 @@
 
 */
         function extractblock_multi(){
-              var i, count,endrange_i;
-              var params=this.codearray.data;
+              var i, count,endrange_i, params;
+              params=this.codearray.data;
 
               for (i = this.codearray.index, count=1; (0 != count) && (i < params.length) ; i++){
                   if (this.opts.startstring == params[i]) count++; 
@@ -69,20 +69,23 @@
 
 
         function parseCode(codestr, knowledge){
-            var codearray={data:codestr.split(/\s+/),index:0};
+            var codearray;
+            codearray={data:codestr.split(/\s+/),index:0};
             return parseCodeArray(codearray, knowledge);
         }
         function parseCodeArray(codearray, knowledge){
             
-            var commandarray=[]; 
-            codearray.data = codearray.data.filter(function (s){ return (knowledge.skipwords.indexOf(s)!=-1) });
+            var commandarray;
+            commandarray=[]; 
+            codearray.data = codearray.data.filter(function (s){ return (knowledge.skipwords.indexOf(s)==-1) });
             while(codearray.index < codearray.data.length){
-                var fname = ':' + codearray.data[codearray.data.index++];
-                var command = getFun(codearray,fname);
+                var fname,command ;
+                fname= ':' + codearray.data[codearray.index++];
+                command = getFun(codearray,fname);
                 if (command)
                     commandarray.push(command);
                 else
-                    throw ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codestr);
+                    throw ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codearray);
             }
             return commandarray;
         }
@@ -109,9 +112,12 @@
          */
 
         function getFun(codearray, fname){
-                if (knowledge.commands.indexOf(fname)){
-                    var fun=knowledge.commands[fname];
-                    var command={call:fun, params:[]};
+                if (knowledge.commands.hasOwnProperty(fname)){
+                    var fun;
+                    var command;
+                    fun=knowledge.commands[fname];
+
+                    command={call:fun, params:[]};
                     for (var param in knowledge.commands[fname].params){
                        command.params.push(parseForEval(codearray, param));
                     }
@@ -175,7 +181,7 @@
         }
         
 
-        function getNextS(codarray){
+        function getNextS(codearray){
             return(codearray.data[codearray.index++]);
         }
 

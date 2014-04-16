@@ -108,7 +108,7 @@
                 ':pickfrom':{run:function(listname) {
 
                         var thelist=lists[':'+listname];
-                        return thelist.data[thelist.index++%thelist.data.length];
+                        return thelist.daata[thelist.index++%thelist.daata.length];
                     },
                     help:'Picks an item from a predefined list. Wraps around after the last item',
                     shorthelp:'Picks an item from a predefied list',
@@ -777,7 +777,7 @@
                         ':setlist':{run: function(listname,list){
                                         if (functions.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
                                         if (vars.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
-                                        lists[':'+ listname]={data:extractblock_single(params,'setlist','endlist'), index:0};
+                                        lists[':'+ listname]={daata:extractblock_single(params,'setlist','endlist'), index:0};
                                     },
                                 'help':'Creates a list of items. Use the pickfromlist function.',
                                 'shorthelp':'Creates a list of items',
@@ -965,7 +965,7 @@
                                 }
                                 function getShortHelp(topic){
                                     if (hasShortHelp(topic)){
-                                        return get_topic_subject(topic).shorthelp;
+                                        return get_topic_object(topic).shorthelp;
                                     } else {
                                         return '';
                                     }
