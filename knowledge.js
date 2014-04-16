@@ -148,7 +148,7 @@
 
 
                 },
-                ':sub':{run:function(num1-num2) {
+                ':sub':{run:function(num1,num2) {
                         return (num1-num2);
                     },
                     help:'Adds two numbers',
@@ -190,7 +190,7 @@
                     }
 
                 },
-                ':div':{run:function(num1-num2) {
+                ':div':{run:function(num1,num2) {
                         return (num1/num2);
                     },
                     help:'Adds two numbers',
@@ -387,7 +387,7 @@
                     }
 
                 },
-                ':ceil':{run:Math.ceil
+                ':ceil':{run:Math.ceil,
                     help:'returns the ceiling of the given float. (Integer next to the float, unless itself an integer)',
                     shorthelp:'returns the ceiling of the given float',
                     params:{
@@ -402,7 +402,7 @@
                     }
 
                 },
-                ':floor':{run: Math.floor
+                ':floor':{run: Math.floor,
                     help:'returns the floor of the given float. (Integer previous to the float, unless itself an integer)',
                     shorthelp:'returns the floor of the given float',
                     params:{
@@ -417,7 +417,7 @@
                     }
 
                 },
-                ':round':{run: Math.round
+                ':round':{run: Math.round,
                     help:'returns the rounded integer of the given float. (Integer nearest to the float)',
                     shorthelp:'returns the round integer of the given float',
                     params:{
@@ -492,7 +492,7 @@
                     }
                 },
                 /* commands */
-            ':pendown':{run: function(){
+                      ':pendown':{run: function(){
                                         pen.down=true;
                                       },
                                 'help':'Make the pen touch the paper. The commands "fwd" and "back" will henceforth make the items draw.',
@@ -575,8 +575,8 @@
                                  }
                                },
                         ':goto':{run: function(distanceX,distanceY) {
-                                     pen.x = distanceX);
-                                     pen.y = distanceY);
+                                     pen.x = distanceX;
+                                     pen.y = distanceY;
                                      cx.moveTo(pen.x,pen.y);
                                  },
                                 'shorthelp':'Moves the pen to the given posisiton without drawing anything',
@@ -623,7 +623,7 @@
                         },
                         ':rpt': {run: function(times,commands) {
                                     var rptEnv = newEnvironment(commands);
-                                    rptEnviron.parentEnv = environment;
+                                    rptEnviron.parentEnv = this;
                                     for (var i = 0; i < times; i++){
                                         rptEnv.codePtr = 0;
                                         callCommands(commands, rptEnv);
@@ -642,7 +642,7 @@
                                         parseropts:{
                                            blockstart:'rpt',
                                            blockend:'endrpt',
-                                           blockstarted:true;
+                                           blockstarted:true
                                         }
                                     }
                                  }
@@ -955,8 +955,7 @@
                         ':help': {
                             run:function(topic){
                                 function get_topic_object(topic){
-                                    if (commands.hasOwnProperty(topic) return commands[topic];
-                                    if (functions.hasOwnProperty(topic) return functions[topic];
+                                    if (knowledge.commands.hasOwnProperty(topic)) return knowledge.commands[topic];
                                 }
                                 function hasShortHelp(topic){
                                     return (get_topic_object(topic).shorthelp != undefined);
@@ -966,7 +965,7 @@
                                 }
                                 function getShortHelp(topic){
                                     if (hasShortHelp(topic)){
-                                        return commands[topic].shorthelp;
+                                        return get_topic_subject(topic).shorthelp;
                                     } else {
                                         return '';
                                     }
@@ -982,6 +981,11 @@
                                                 helptext+='<b>'+i+'</b>: ' + helptopicobj.params[i].help + '<br>' ;
                                             }
                                         }
+                                        if (Object.keys(helptopicobj.returns).length > 0) {
+                                            helptext+='<h3>Returns</h3>';
+                                            helptext+='<b>type: ' + helptopicobj.returns.help + '</b><br>' ;
+                                            helptext+= helptopicobj.returns.help + '<br>' ;
+                                        }
                                        return helptext;
                                     } else {
                                         return 'No Such Topic';
@@ -990,13 +994,12 @@
                                 }
                                 var helptext='';
                                 if (topic == 'all' || topic == undefined) {
-                                    for (command in commands){
+                                    for (command in knowledge.commands){
                                         if (hasShortHelp(command)){
                                             helptext+="<br><span style='font-weight:bold'>"+command+"</span>:";
                                             helptext+=getShortHelp(command);
                                         }
                                     }
-                                    helptext+='<h4>Functions</h4>'+Object.keys(functions).map(function(x) {return x.split(':')[1]}).join(',');
                                     helptext+="<br><h4>Examples</h4> use <code>listexamples</code> and <code>showexample examplename</code> to go through inbuilt examples. They should give you a fair idea of how to write logoish programs. \nRemember this is pre-alpha stuff. Syntax subject to change.\nAnd hey! Don't forget to 'pendown' first!";
                                 } else {
                                     helptext=getHelp(topic);

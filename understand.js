@@ -108,8 +108,8 @@
             codeblock(blockstart, blockend)
          */
 
-        function getFun(codearray, fun){
-                if (knowledge.commands.indexOf(fname){
+        function getFun(codearray, fname){
+                if (knowledge.commands.indexOf(fname)){
                     var fun=knowledge.commands[fname];
                     var command={call:fun, params:[]};
                     for (var param in knowledge.commands[fname].params){
@@ -128,8 +128,10 @@
             }
             if (!IsNaN(min)){
                 num=parseFloat(s<min?min:s);
+            }
             if (!IsNaN(max)){
                 num=parseFloat(s>max?max:s);
+            }
             return num;
         }
 
@@ -140,8 +142,10 @@
             }
             if (!IsNaN(min)){
                 num=parseInt(s<min?min:s);
+            }
             if (!IsNaN(max)){
                 num=parseInt(s>max?max:s);
+            }
             return num;
         }
 
@@ -155,15 +159,15 @@
 
         function varOrStr(){
             var name=':'+this.s;
-            if (environment.vars.hasOwnProperty(name)){
-                return environment.vars[name]; 
+            if (globalenv.vars.hasOwnProperty(name)){
+                return globalenv.vars[name]; 
             } else {
                 return this.s.toString();
             }
         }
         function getList(){
             var name=':' + this.s;
-            if (environment.lists.hasOwnProperty(name)){
+            if (globalenv.lists.hasOwnProperty(name)){
                 return environment.lists[name]; 
             } else {
                 return [];
@@ -184,7 +188,7 @@
         
         function parseForEval(codearray, param){
              var s = getNextS(codearray);
-             switch(param.type)
+             switch(param.type) {
                 case 'varname':
                 case 'stringasis': 
                     asis(s);
@@ -208,7 +212,7 @@
                             return ({call:getVarInt.bind({s:s}),params:[]}); 
                         }
                     } else {
-                        return (asis(getInt(s));
+                        return (asis(getInt(s)));
                     }
                     break;
                 case 'pixels':
@@ -221,17 +225,19 @@
                             return ({call:getVarFloat.bind({s:s,opts:param.parseropts}),params:[]}); 
                         }
                     } else {
-                        return (asis(getFloat(s));
+                        return (asis(getFloat(s)));
                     }
                     break;
-                case: 'list':
-                    return ({call:getVarList.bind({s:s}), params:{});
+                case 'list':
+                    return ({call:getVarList.bind({s:s}), params:{}});
                     break;
-                case: 'block':
+                case 'block':
                     return (asis(extractblock.bind({codearray:codearray,opts:params.parseropts})()));
                     break;
-                case: 'block':
+                case 'block':
                     return (parseCodeArr(extractblock.bind({codearray:codearray,opts:params.parseropts})()),knowledge);
                     break;
+
+              }
 
         }
