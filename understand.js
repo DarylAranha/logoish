@@ -43,18 +43,20 @@
 
 */
         function extractblock_multi(){
-              var i, count,endrange_i, params;
+              var i, count, params;
               params=this.codearray.data;
               count=this.opts.blockstarted?1:0;
 
-              for (i = this.codearray.index; (0 != count) && (i < params.length) ; i++){
+              for (i = this.codearray.index -1; (0 != count) && (i < params.length) ; i++){
                   if (this.opts.blockstart == params[i]) count++; 
                   if (this.opts.blockend == params[i]) count--; 
+                  console.log ('range check ' + params[i] + ' ' + count);
               }
-              if (count!=0){ throw ("NO matching "+this.opts.endstring)};  
+              if (count!=0){ throw ("NO matching " + this.opts.blockend + ' for '+ this.opts.blockstart + ' at ' + this.codearray.index + ' in ' + this.codearray.data.join(' '))};  
               var extracted;
               extracted=params.slice(this.codearray.index-1,i - 1);
-              this.codearray.index=i+1;
+              this.codearray.index=i;
+              console.log(extracted);
               return extracted;
         }
 
@@ -63,12 +65,11 @@
               var params;
               var endrange_i; 
               params=this.codearray.data;
-              endrange_i= params.indexOf(this.opts.blockend, this.codearray.index);
-              if (endrange_i==-1){ 
-                throw ("NO matching " + this.opts.blockend + ' at ' + this.codearray.index ); 
-              }   
-              var extracted=params.slice(this.codearray.index,endrange_i);
-              params.splice(this.codearray.index,endrange_i+1);
+              endrange_i= params.indexOf(this.opts.blockend, this.codearray.index -1);
+              if (endrange_i==-1){ throw ("NO matching " + this.opts.blockend + ' for '+ this.opts.blockstart + ' at ' + this.codearray.index + ' in ' + this.codearray.data.join(' '))};  
+              var extracted;
+              extracted=params.slice(this.codearray.index - 1,endrange_i);
+              this.codearray.index=endrange_i+1;
               return extracted;
         }
 
@@ -85,7 +86,7 @@
             codearray.data = codearray.data.filter(function (s){ return (knowledge.skipwords.indexOf(s)==-1) });
             while(codearray.index < codearray.data.length){
                 var fname,command ;
-                fname= ':' + codearray.data[codearray.index++];
+                fname= codearray.data[codearray.index++];
                 command = getFun(codearray,fname);
                 if (command ){
                     commandarray.push(command);
@@ -119,6 +120,7 @@
          */
 
         function getFun(codearray, fname){
+                fname=':'+fname;
                 if (knowledge.commands.hasOwnProperty(fname)){
                     var fun;
                     var command;
@@ -178,7 +180,7 @@
                 return this.s.toString();
             }
         }
-        function getList(){
+        function getVarList(){
             var name=':' + this.s;
             if (globalEnv.lists.hasOwnProperty(name)){
                 return environment.lists[name]; 
@@ -209,7 +211,7 @@
                 case 'color':
                 case 'any': 
                 case 'string':
-                    var f = getFun(codearray, ':'+s);
+                    var f = getFun(codearray, s);
                     if (f) {
                         return (f);
                     } else {
@@ -233,6 +235,7 @@
                 case 'float':
                     if (isNaN(s)){
                         var f = getFun(codearray, s);
+                        console.log(f);
                         if (f) {
                             return (f);
                         } else  {

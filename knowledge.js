@@ -107,15 +107,15 @@
                 },
                 ':pickfrom':{run:function(listname) {
 
-                        var thelist=lists[':'+listname];
-                        return thelist.daata[thelist.index++%thelist.daata.length];
+                        var thelist=globalEnv.lists[':'+listname];
+                        return thelist.data[thelist.index++%thelist.data.length];
                     },
                     help:'Picks an item from a predefined list. Wraps around after the last item',
                     shorthelp:'Picks an item from a predefied list',
                     params:{
                         name:{
                             help:'The list formerly defined using "setlist" command',
-                            type:'list'
+                            type:'varname'
                         }
                     },
                     returns:{
@@ -776,11 +776,11 @@
                                          }
                                },
                         ':setlist':{run: function(listname,list){
-                                        if (functions.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
-                                        if (vars.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
-                                        lists[':'+ listname]={daata:extractblock_single(params,'setlist','endlist'), index:0};
+                                        if (knowledge.commands.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
+                                        if (globalEnv.vars.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
+                                        globalEnv.lists[':'+ listname]={data:list, index:0};
                                     },
-                                'help':'Creates a list of items. Use the pickfromlist function.',
+                                'help':'Creates a list of items. Use the "pickfrom" function.',
                                 'shorthelp':'Creates a list of items',
                                 'params':{
                                             'listname':{
@@ -798,7 +798,7 @@
                                              }
                                          }
                                },
-                        ':anim':{run: function(times,delay,functions, params){
+                        ':anim':{run: function(times,delay,commandblock){
                                         var animating=false;
                                         var animdone=false;
                                         var counter;
@@ -882,7 +882,7 @@
                                          }
                                },
                         ':evaldisp':{run: function(expression){
-                                        logIt(evaluate(expression));
+                                        logIt(expression);
                                     },
                                     shorthelp: 'evaluate and display the result of the function call or variable that follows',
                                     help: 'evaluate and display the result of the function call or variable that follows',
@@ -967,7 +967,9 @@
                                     return (get_topic_object(topic).shorthelp != undefined);
                                 }
                                 function hasHelp(topic){
-                                    return (get_topic_object(topic).help != undefined);
+                                    var tobj;
+                                    tobj = get_topic_object(topic);
+                                    return (tobj != undefined && tobj.help != undefined);
                                 }
                                 function getShortHelp(topic){
                                     if (hasShortHelp(topic)){
@@ -978,6 +980,7 @@
                                 }
                                 function getHelp(topic) {
                                     var helptext='';
+                                    topic=':'+topic;
                                     var helptopicobj=get_topic_object(topic);
                                     if (hasHelp(topic)) {
                                         helptext=helptopicobj.help;
@@ -987,7 +990,7 @@
                                                 helptext+='<b>'+i+'</b>: ' + helptopicobj.params[i].help + '<br>' ;
                                             }
                                         }
-                                        if (Object.keys(helptopicobj.returns).length > 0) {
+                                        if (helptopicobj.returns!=undefined && Object.keys(helptopicobj.returns).length > 0) {
                                             helptext+='<h3>Returns</h3>';
                                             helptext+='<b>type: ' + helptopicobj.returns.help + '</b><br>' ;
                                             helptext+= helptopicobj.returns.help + '<br>' ;
