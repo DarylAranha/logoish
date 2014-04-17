@@ -798,27 +798,24 @@
                                          }
                                },
                         ':anim':{run: function(times,delay,commandblock){
-                                        var animating = false;
-                                        var animdone = false;
-                                        var counter;
-                                        counter=0;
                                         var animEnv ;
                                         animEnv = newEnvironment(commandblock);
                                         animEnv.parentEnv = this;
-
+                                        animEnv.animating = false;
+                                        animEnv.counter=0;
                                         var animslice = function (){ 
-                                            if (counter < times){
-                                                if (!animating){
-                                                    animating = true;
+                                            if (animEnv.counter < times){
+                                                if (!animEnv.animating){
+                                                    animEnv.animating = true;
                                                     animEnv.codePtr=0;
                                                     callCommands(commandblock, animEnv); 
-                                                    counter++;
-                                                    animating = false;
+                                                    animEnv.counter++;
+                                                    animEnv.animating = false;
                                                 }
+                                                setTimeout(animslice, delay); 
                                             } else {
-                                                callCommands(commandblock, animEnv.parentEnv);
+                                                callCommands(animEnv.parentEnv.commandarray, animEnv.parentEnv);
                                             }
-                                            setTimeout(animslice, delay); 
                                         };
                                         animslice();
                                     },
