@@ -746,8 +746,8 @@
                         ':incr':{run: function(varname, value){
                                         var variablename=':'+varname;
 
-                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        vars[variablename]= parseFloat(vars[variablename]) + value;
+                                        if (knowledge.commands.hasOwnProperty(variablename)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        globalEnv.vars[variablename]= parseFloat(globalEnv.vars[variablename]) + value;
                                     },
                                 'help':'increases the value of a variable by given value',
                                 'shorthelp':'increases the value of a variable by given value',

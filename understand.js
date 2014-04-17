@@ -59,8 +59,11 @@
         }
 
         function extractblock_single(){
-              var params=this.codearray.data;
-              var endrange_i = params.indexOf(this.opts.blockend, this.codearray.index);
+
+              var params;
+              var endrange_i; 
+              params=this.codearray.data;
+              endrange_i= params.indexOf(this.opts.blockend, this.codearray.index);
               if (endrange_i==-1){ 
                 throw ("NO matching " + this.opts.blockend + ' at ' + this.codearray.index ); 
               }   
@@ -160,11 +163,11 @@
         }
 
         function getVarFloat(){
-            return getFloat(varOrStr(this.s),this.opts.min, this.opts.max); 
+            return getFloat(varOrStr.bind({s:this.s})()); 
         }
 
         function getVarInt(){
-            return getInt(varOrStr(this.s)); 
+            return getInt(varOrStr.bind({s:this.s})()); 
         }
 
         function varOrStr(){
