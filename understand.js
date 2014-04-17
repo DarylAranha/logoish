@@ -193,6 +193,7 @@
                         return ({call:{run:varOrStr.bind({s:s})}, params:[]});
                     }
                     break;
+                case 'milliseconds':
                 case 'integer':
                     if (isNaN(s)){
                         var f = getFun(codearray, s);

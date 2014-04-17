@@ -16,7 +16,8 @@ function handleCall(obj, environment){
                 paramArray.push(handleCall(obj.params[p]));
         }
         try{
-            return obj.call.run.apply(environment, paramArray);
+            ret=obj.call.run.apply(environment, paramArray);
+            return ret;
         } catch(e){
             console.log(obj);
             throw (e);

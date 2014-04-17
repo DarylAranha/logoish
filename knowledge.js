@@ -564,7 +564,7 @@
                                 'help':'Moves the pen forward n pixels in the angle of the pen',
                                 'params':{'distance':{help: 'The distance in pixel by which to move the pen from its current position',type:'pixels'}}
                         },
-                        ':back':{run: function(distance){commands[':fwd'].run(-distance)},
+                        ':back':{run: function(distance){knowledge.commands[':fwd'].run(-distance)},
                                 'shorthelp':'Moves the pen backward by n pixels',
                                 'help':'Moves the pen backward n pixels in the angle of the pen from its currnet position',
                                 'params':{
@@ -798,51 +798,29 @@
                                          }
                                },
                         ':anim':{run: function(times,delay,commandblock){
-                                        var animating=false;
-                                        var animdone=false;
+                                        var animating = false;
+                                        var animdone = false;
                                         var counter;
-                                        var curanim=[];
+                                        counter=0;
+                                        var animEnv ;
+                                        animEnv = newEnvironment(commandblock);
+                                        animEnv.parentEnv = this;
 
-                                        var anim_hungry=true;
-                                        var animslice=function (){ 
-                                            if (anim_hungry){
-                                                curanim=extracted.shift();
-                                                counter=0;
-                                                logIt('Checking for animations ..');
-                                                if (curanim==undefined){
-                                                    animdone=true;
-                                                    logIt('animations ended');
-                                                    return;
-                                                }
-                                                logIt('got animation, animating ..');
-                                                
-                                                times = evaluate(curanim);
-                                                delay = evaluate(curanim);
-
-                                                var preanimend=curanim.indexOf('endpreanim');
-                                                if (preanimend!=-1){
-                                                    var preanim=curanim.slice(0,preanimend);
-                                                    execit(preanim);
-                                                    curanim.splice(0,preanimend+1);
-                                                }
-                                                anim_hungry=false;
-                                            }
-
+                                        var animslice = function (){ 
                                             if (counter < times){
                                                 if (!animating){
-                                                    var animating=true;
-                                                    execit(curanim.slice());
+                                                    animating = true;
+                                                    animEnv.codePtr=0;
+                                                    callCommands(commandblock, animEnv); 
                                                     counter++;
-                                                    animating=false;
+                                                    animating = false;
                                                 }
                                             } else {
-                                                    anim_hungry=true;
+                                                callCommands(commandblock, animEnv.parentEnv);
                                             }
-                                            setTimeout(animslice,delay); 
-
+                                            setTimeout(animslice, delay); 
                                         };
                                         animslice();
-                                        params.splice(0,endsat+1);
                                     },
                                 'help':'Animates the commands till "endanim" optionally seperated by "nextanim"',
                                 'shorthelp':'Animates the commands till "endanim". You cannot currently have more than one animation block. But you can do multiple animations in the same block. Just use "nextanim" followed by times and delay parameter to mark the seperation. To get a clearer idea, look at the examples',
@@ -857,7 +835,7 @@
                                              },
                                             'commandblock':{
                                                 help: 'the set of instructions to repeat for each frame', 
-                                                type:'block',
+                                                type:'codeblock',
                                                 parseropts:{
                                                     blockstart:'anim',
                                                     blockend:'endanim',
