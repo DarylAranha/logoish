@@ -262,7 +262,7 @@
                     }
 
                 },
-                ':rgba':{run:function(red, gree, blue, alpha) {
+                ':rgba':{run:function(red, green, blue, alpha) {
                         return ('rgb('+ red + ',' + green  + ',' + blue + ','+ alpha + ')');
                     },
                     help:'Returns a css representation of the color formed from red, green, blue and alpha values, mostly usefull with the "color" command. Usefull for generating the representation from values derived computationaly',
@@ -762,11 +762,10 @@
                                          }
                                },
                         ':decr':{run: function(varname, value){
-                                        var val=evaluate(params);
                                         var variablename=':'+varname;
 
-                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        vars[variablename]= parseFloat(vars[variablename]) - parseFloat(value);
+                                        if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        globalEnv.vars[variablename]= parseFloat(globalEnv.vars[variablename]) - value;
                                     },
                                 'help':'decreases the value of a variable by given value',
                                 'shorthelp':'decreases the value of a variable by given value',
@@ -870,10 +869,10 @@
 
                                },
                         ':resetlist':{run: function(varname){
-                                        if (vars.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
-                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
-                                        if (!lists.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list. Cannot reset');
-                                        lists[':'+ varname].index=0;
+                                        if (globalEnv.vars.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (globalEnv.functions.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (!globalEnv.lists.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list. Cannot reset');
+                                        globalEnv.lists[':'+ varname].index=0;
                                     },
                                 'help':'Resets the index of the list back to the first item in the list',
                                 'shorthelp':'Resets the index of the list back to the first item in the list',
@@ -938,25 +937,25 @@
                                             }
                                     }
                          },
-                        ':function':{run: function(name){
-                                    //TODO: IMplement
-                                },
-                                help:'register user defined functions',
-                                shorthelp:'register user defined functions',
-                                params:{
-                                        name: {help: 'the name of the function',type:'stringasis'},
-                                        'params': {
-                                            help:'the list of parameters must be defined between "params" and "endparams"',
-                                            type:'block',
-                                            parseropts:{
-                                                blockstart:'params',
-                                                blockend: 'endparams',
-                                                begun:true
-                                            }
-                                        }
-
-                                }
-                        },
+//                        ':fun':{run: function(name){
+//                                    //TODO: IMplement
+//                                },
+//                                help:'register user defined functions',
+//                                shorthelp:'register user defined functions',
+//                                params:{
+//                                        name: {help: 'the name of the function',type:'stringasis'},
+//                                        'params': {
+//                                            help:'the list of parameters must be defined between "params" and "endparams"',
+//                                            type:'block',
+//                                            parseropts:{
+//                                                blockstart:'params',
+//                                                blockend: 'endparams',
+//                                                blockstarted:false
+//                                            }
+//                                        }
+//
+//                                }
+//                        },
 
                         ':help': {
                             run:function(topic){

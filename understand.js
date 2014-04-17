@@ -18,30 +18,7 @@
             else 
                 return (parseFloat(s));
         }
-/*
-        function extractblock_multi(params,startstring,endstring){
-              var i, count,endrange_i;
-              for (i = 0, count=1; (0 != count) && (i < params.length) ; i++){
-                  if (startstring == params[i]) count++; 
-                  if (endstring == params[i]) count--; 
-              }
-              if (count!=0){ throw ("NO matching "+endstring)};  
-              var extracted=params.slice(0,i - 1);
-              params.splice(0,i);
-              return extracted;
-        }
 
-        function extractblock_single(params,startstring,endstring){
-              var endrange_i = params.indexOf(endstring);
-              if (endrange_i==-1){ 
-                throw ("NO matching "+endstring) 
-              }   
-              var extracted=params.slice(0,endrange_i);
-              params.splice(0,endrange_i+1);
-              return extracted;
-        }
-
-*/
         function extractblock_multi(){
               var i, count, params;
               params=this.codearray.data;
@@ -50,25 +27,22 @@
               for (i = this.codearray.index -1; (0 != count) && (i < params.length) ; i++){
                   if (this.opts.blockstart == params[i]) count++; 
                   if (this.opts.blockend == params[i]) count--; 
-                  console.log ('range check ' + params[i] + ' ' + count);
               }
               if (count!=0){ throw ("NO matching " + this.opts.blockend + ' for '+ this.opts.blockstart + ' at ' + this.codearray.index + ' in ' + this.codearray.data.join(' '))};  
               var extracted;
               extracted=params.slice(this.codearray.index-1,i - 1);
               this.codearray.index=i;
-              console.log(extracted);
               return extracted;
         }
 
         function extractblock_single(){
-
               var params;
               var endrange_i; 
               params=this.codearray.data;
               endrange_i= params.indexOf(this.opts.blockend, this.codearray.index -1);
               if (endrange_i==-1){ throw ("NO matching " + this.opts.blockend + ' for '+ this.opts.blockstart + ' at ' + this.codearray.index + ' in ' + this.codearray.data.join(' '))};  
               var extracted;
-              extracted=params.slice(this.codearray.index - 1,endrange_i);
+              extracted=params.slice(this.codearray.index - 1, endrange_i);
               this.codearray.index=endrange_i+1;
               return extracted;
         }
@@ -79,6 +53,7 @@
             codearray={data:codestr.split(/\s+/),index:0};
             return parseCodeArray(codearray, knowledge);
         }
+        
         function parseCodeArray(codearray, knowledge){
             
             var commandarray;
@@ -235,7 +210,6 @@
                 case 'float':
                     if (isNaN(s)){
                         var f = getFun(codearray, s);
-                        console.log(f);
                         if (f) {
                             return (f);
                         } else  {

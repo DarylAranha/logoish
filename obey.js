@@ -19,8 +19,8 @@ function handleCall(obj, environment){
             return obj.call.run.apply(environment, paramArray);
         } catch(e){
             console.log(obj);
+            throw (e);
         }
     }
-
 }
 
