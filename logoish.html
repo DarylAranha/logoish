@@ -152,6 +152,7 @@
             else 
                 saveLast = save;
             globalEnv.commandarray=parseCode(cmdline,knowledge);
+            globalEnv.codePtr=0;
             callCommands(globalEnv.commandarray, globalEnv);
 
         }

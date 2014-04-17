@@ -622,8 +622,9 @@
 
                         },
                         ':rpt': {run: function(times,commands) {
-                                    var rptEnv = newEnvironment(commands);
-                                    rptEnviron.parentEnv = this;
+                                    var rptEnv ;
+                                    rptEnv= newEnvironment(commands);
+                                    rptEnv.parentEnv = this;
                                     for (var i = 0; i < times; i++){
                                         rptEnv.codePtr = 0;
                                         callCommands(commands, rptEnv);
@@ -727,8 +728,8 @@
                                 'params':{}
                                 },
                         ':set':{run: function(varname,value){
-                                        if (functions.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        vars[':'+ varname]=value;
+                                        if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        globalEnv.vars[':'+ varname]=value;
                                     },
                                 'help':'sets the value of a variable to the given value',
                                 'shorthelp':'sets the value of a variable',
@@ -911,7 +912,12 @@
                                  dontclear:true,
                                 'shorthelp':'Show an inbuilt example',
                                 'help':'Retrieve and populate the command prompt with a saved example, ready to be executed',
-                                'params':{'slotname':{help: 'The name of the example. to show',type:'stringasis'}}
+                                'params':{
+                                    'slotname':{
+                                        help:'The name of the example to show',
+                                        type:'stringasis'
+                                        }
+                                 }
 
                                 
                         },

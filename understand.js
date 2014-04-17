@@ -45,22 +45,24 @@
         function extractblock_multi(){
               var i, count,endrange_i, params;
               params=this.codearray.data;
+              count=this.opts.blockstarted?1:0;
 
-              for (i = this.codearray.index, count=1; (0 != count) && (i < params.length) ; i++){
-                  if (this.opts.startstring == params[i]) count++; 
-                  if (this.opts.endstring == params[i]) count--; 
+              for (i = this.codearray.index; (0 != count) && (i < params.length) ; i++){
+                  if (this.opts.blockstart == params[i]) count++; 
+                  if (this.opts.blockend == params[i]) count--; 
               }
-              if (count!=0){ throw ("NO matching "+endstring)};  
-              var extracted=this.codearray.slice(this.codearray.index,i - 1);
+              if (count!=0){ throw ("NO matching "+this.opts.endstring)};  
+              var extracted;
+              extracted=params.slice(this.codearray.index-1,i - 1);
               this.codearray.index=i+1;
               return extracted;
         }
 
         function extractblock_single(){
               var params=this.codearray.data;
-              var endrange_i = params.indexOf(this.opts.endstring, this.codearray.index);
+              var endrange_i = params.indexOf(this.opts.blockend, this.codearray.index);
               if (endrange_i==-1){ 
-                throw ("NO matching " + endstring + ' at ' + this.codearray.index ); 
+                throw ("NO matching " + this.opts.blockend + ' at ' + this.codearray.index ); 
               }   
               var extracted=params.slice(this.codearray.index,endrange_i);
               params.splice(this.codearray.index,endrange_i+1);
@@ -82,10 +84,12 @@
                 var fname,command ;
                 fname= ':' + codearray.data[codearray.index++];
                 command = getFun(codearray,fname);
-                if (command)
+                if (command ){
                     commandarray.push(command);
-                else
-                    throw ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codearray);
+                } else {
+                    logIt ('Dont know how to do '+ fname + ' at ' + codearray.index + ' in ' + codearray.data.join(' '));
+                    return[];
+                }
             }
             return commandarray;
         }
@@ -93,9 +97,9 @@
 
         /* types: 
             angle,
+            pixels,
             float(max=Infinity,min=-Infinity),
             
-            pixels,
             integer(max=Infinity,min=-Infinity),
 
             list,
@@ -115,11 +119,11 @@
                 if (knowledge.commands.hasOwnProperty(fname)){
                     var fun;
                     var command;
-                    fun=knowledge.commands[fname];
+                    fun = knowledge.commands[fname];
 
                     command={call:fun, params:[]};
-                    for (var param in knowledge.commands[fname].params){
-                       command.params.push(parseForEval(codearray, param));
+                    for (var param in fun.params){
+                       command.params.push(parseForEval(codearray, fun.params[param]));
                     }
                     return command;
                 } else {
@@ -127,15 +131,15 @@
                 }
         }
 
-        function getInt(s,min,max){
+        function getFloat(s,min,max){
             var num=0
-            if (!IsNaN(s)){
+            if (!isNaN(s)){
                 num=parseFloat(s);
             }
-            if (!IsNaN(min)){
+            if (!isNaN(min)){
                 num=parseFloat(s<min?min:s);
             }
-            if (!IsNaN(max)){
+            if (!isNaN(max)){
                 num=parseFloat(s>max?max:s);
             }
             return num;
@@ -143,13 +147,13 @@
 
         function getInt(s,min,max){
             var num=0
-            if (!IsNaN(s)){
+            if (!isNaN(s)){
                 num=parseInt(s);
             }
-            if (!IsNaN(min)){
+            if (!isNaN(min)){
                 num=parseInt(s<min?min:s);
             }
-            if (!IsNaN(max)){
+            if (!isNaN(max)){
                 num=parseInt(s>max?max:s);
             }
             return num;
@@ -165,15 +169,15 @@
 
         function varOrStr(){
             var name=':'+this.s;
-            if (globalenv.vars.hasOwnProperty(name)){
-                return globalenv.vars[name]; 
+            if (globalEnv.vars.hasOwnProperty(name)){
+                return globalEnv.vars[name]; 
             } else {
                 return this.s.toString();
             }
         }
         function getList(){
             var name=':' + this.s;
-            if (globalenv.lists.hasOwnProperty(name)){
+            if (globalEnv.lists.hasOwnProperty(name)){
                 return environment.lists[name]; 
             } else {
                 return [];
@@ -185,9 +189,9 @@
             return(codearray.data[codearray.index++]);
         }
 
-        function asis(o){
+        function asis(obj){
                 return ({
-                    call:function(){return (o)},
+                    call:{run:function(){return (obj)}},
                     params:[],
                     });
         }
@@ -197,38 +201,39 @@
              switch(param.type) {
                 case 'varname':
                 case 'stringasis': 
-                    asis(s);
+                    return asis(s);
                     break;
                 case 'color':
                 case 'any': 
                 case 'string':
-                    var f = getFun(codearray, s);
+                    var f = getFun(codearray, ':'+s);
                     if (f) {
                         return (f);
                     } else {
-                        return ({call:varOrStr.bind({s:s}), params:[]});
+                        return ({call:{run:varOrStr.bind({s:s})}, params:[]});
                     }
                     break;
                 case 'integer':
-                    if (IsNaN){
-                        var f = getFun(codeArray, s);
+                    if (isNaN(s)){
+                        var f = getFun(codearray, s);
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:getVarInt.bind({s:s}),params:[]}); 
+                            return ({call:{run:getVarInt.bind({s:s})},params:[]}); 
                         }
                     } else {
                         return (asis(getInt(s)));
                     }
                     break;
+                case 'angle':
                 case 'pixels':
                 case 'float':
-                    if (IsNaN(s)){
-                        var f = getFun(codeArray, s);
+                    if (isNaN(s)){
+                        var f = getFun(codearray, s);
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:getVarFloat.bind({s:s,opts:param.parseropts}),params:[]}); 
+                            return ({call:{run:getVarFloat.bind({s:s,opts:param.parseropts})},params:[]}); 
                         }
                     } else {
                         return (asis(getFloat(s)));
@@ -238,11 +243,13 @@
                     return ({call:getVarList.bind({s:s}), params:{}});
                     break;
                 case 'block':
-                    return (asis(extractblock.bind({codearray:codearray,opts:params.parseropts})()));
+                    return (asis(extractblock_single.bind({codearray:codearray,opts:param.parseropts})()));
                     break;
-                case 'block':
-                    return (parseCodeArr(extractblock.bind({codearray:codearray,opts:params.parseropts})()),knowledge);
+                case 'codeblock':
+                    return (asis(parseCodeArray({data:extractblock_multi.bind({codearray:codearray,opts:param.parseropts})(),index:0  },knowledge)));
                     break;
+                default:
+                    throw('Internal Error:Unknown type '+ param.type + ' Please file a bug report');
 
               }
 
