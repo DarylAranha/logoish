@@ -1,16 +1,3 @@
-        Array.prototype.split=function(seperator){
-                                var data=this.slice();
-                                var i=this.indexOf(seperator);
-                                if (i==-1) {return [data]} ; 
-                                ret=[]; 
-                                while (i != -1){
-                                    ret.push(data.slice(0,i));
-                                    data.splice(0,i+1);
-                                    i=data.indexOf(seperator);
-                                } 
-                                ret.push(data);
-                                return ret 
-                              };
 
         function getNum(s){
             if (isNaN(s)) 

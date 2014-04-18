@@ -11,11 +11,16 @@ function callCommands(commandarray, environment){
 function handleCall(obj, environment){
     if (obj != undefined) {
         var paramArray;
-        paramArray=[];
+/*        paramArray=[];
         for(p in obj.params){
             if (obj.params.hasOwnProperty(p)) 
                 paramArray.push(handleCall(obj.params[p]));
+            else 
+                console.log(p);
         }
+*/
+
+        paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x])});
             ret=obj.call.run.apply(environment, paramArray);
             return ret;
     }
