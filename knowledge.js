@@ -698,6 +698,7 @@
                                       saveLast=false;
                                       },
                                  dontclear:true,
+                                 params:{}
                                 },
                         ':delete': {run: function(slotname){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
