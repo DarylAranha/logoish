@@ -588,8 +588,8 @@
                         },
                         ':info':{run: function() {
                                      logIt('<b>Pen:</b> '+JSON.stringify(pen));
-                                     logIt('<b>Variables:</b>'+JSON.stringify(vars));
-                                     logIt('<b>:</b>'+JSON.stringify(lists));
+                                     //logIt('<b>Variables:</b>'+JSON.stringify(vars));
+                                     //logIt('<b>:</b>'+JSON.stringify(lists));
                                      saveLast=false;
                                 },
                                 'shorthelp':'Prints different properties of the pen and environment',
@@ -623,8 +623,7 @@
                         },
                         ':rpt': {run: function(times,commands) {
                                     var rptEnv ;
-                                    rptEnv= newEnvironment(commands);
-                                    rptEnv.parentEnv = this;
+                                    rptEnv= newEnvironment(commands,this);
                                     for (var i = 0; i < times; i++){
                                         rptEnv.codePtr = 0;
                                         callCommands(commands, rptEnv);
@@ -729,8 +728,9 @@
                                 'params':{}
                                 },
                         ':set':{run: function(varname,value){
-                                        if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        globalEnv.vars[':'+ varname]=value;
+                                        if (knowledge.commands.hasOwnProperty(':'+varname)) 
+                                            logIt(varname + ' is a function. ERROR Cannot use it as a variable');
+                                        getEnvForVarSet(varname,this).vars[':'+ varname]=value;
                                     },
                                 'help':'sets the value of a variable to the given value',
                                 'shorthelp':'sets the value of a variable',
@@ -746,9 +746,12 @@
                                },
                         ':incr':{run: function(varname, value){
                                         var variablename=':'+varname;
+                                        var varenv;
 
                                         if (knowledge.commands.hasOwnProperty(variablename)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        globalEnv.vars[variablename]= parseFloat(globalEnv.vars[variablename]) + value;
+                                        
+                                        varenv=getEnvForVarSet(varname,this);
+                                        varenv.vars[variablename]= parseFloat(varnv.vars[variablename]) + value;
                                     },
                                 'help':'increases the value of a variable by given value',
                                 'shorthelp':'increases the value of a variable by given value',
@@ -766,7 +769,8 @@
                                         var variablename=':'+varname;
 
                                         if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        globalEnv.vars[variablename]= parseFloat(globalEnv.vars[variablename]) - value;
+                                        varenv=getEnvForVarSet(varname,this);
+                                        varenv.vars[variablename]= parseFloat(varnv.vars[variablename]) - value;
                                     },
                                 'help':'decreases the value of a variable by given value',
                                 'shorthelp':'decreases the value of a variable by given value',
@@ -776,9 +780,9 @@
                                          }
                                },
                         ':setlist':{run: function(listname,list){
-                                        if (knowledge.commands.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
-                                        if (globalEnv.vars.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a variable');
-                                        globalEnv.lists[':'+ listname]={data:list, index:0};
+                                        if (knowledge.commands.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
+                                        if (getEnvForVarGet(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
+                                        getEnvForListSet(':'+listname).lists[':'+ listname]={data:list, index:0};
                                     },
                                 'help':'Creates a list of items. Use the "pickfrom" function.',
                                 'shorthelp':'Creates a list of items',
@@ -800,8 +804,7 @@
                                },
                         ':anim':{run: function(times,delay,commandblock){
                                         var animEnv ;
-                                        animEnv = newEnvironment(commandblock);
-                                        animEnv.parentEnv = this;
+                                        animEnv = newEnvironment(commandblock,this);
                                         animEnv.animating = false;
                                         animEnv.counter=0;
                                         var animslice = function (){ 
@@ -845,9 +848,9 @@
 
                                },
                         ':resetlist':{run: function(varname){
-                                        if (globalEnv.vars.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
-                                        if (globalEnv.functions.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
-                                        if (!globalEnv.lists.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list. Cannot reset');
+                                        if (getEnvForVarGet(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is not a list Cannot reset');
+                                        if (!getEnvForListget(':'+varname)) logIt(varname + ' is not a list. Cannot reset');
                                         globalEnv.lists[':'+ varname].index=0;
                                     },
                                 'help':'Resets the index of the list back to the first item in the list',
@@ -913,26 +916,41 @@
                                             }
                                     }
                          },
-//                        ':fun':{run: function(name){
-//                                    //TODO: IMplement
-//                                },
-//                                help:'register user defined functions',
-//                                shorthelp:'register user defined functions',
-//                                params:{
-//                                        name: {help: 'the name of the function',type:'stringasis'},
-//                                        'params': {
-//                                            help:'the list of parameters must be defined between "params" and "endparams"',
-//                                            type:'block',
-//                                            parseropts:{
-//                                                blockstart:'params',
-//                                                blockend: 'endparams',
-//                                                blockstarted:false
-//                                            }
-//                                        }
-//
-//                                }
-//                        },
+                        ':fun':{run: function(name, params, code){
+                                    this.functions[':'+name]={
+                                        params:params,
+                                        codearray:codearray
+                                    }
+                                },
+                                help:'register user defined functions',
+                                shorthelp:'register user defined functions',
+                                params:{
+                                        name: {help: 'the name of the function',type:'stringasis'},
+                                        params: {
+                                            help:'the list of parameters must be defined between "params" and "endparams"',
+                                            type:'block',
+                                            parseropts:{
+                                                blockstart:'params',
+                                                blockend: 'endparams',
+                                                blockstarted:false
+                                            }
+                                        },
+                                        code: {
+                                            help:'the code of the function',
+                                            type:'codeblock',
+                                            parseropts:{
+                                                blockstart:'fun',
+                                                blockend: 'endfun',
+                                                blockstarted:true
+                                            }
+                                        }
 
+                                }
+                        },
+                        
+                        ':call':{
+                        },
+                        
                         ':help': {
                             run:function(topic){
                                 function get_topic_object(topic){

@@ -127,20 +127,81 @@
         }
 
         function getVarFloat(){
-            return getFloat(varOrStr.bind({s:this.s})()); 
+            return getFloat(varOrStr.bind(this)()); 
         }
 
         function getVarInt(){
-            return getInt(varOrStr.bind({s:this.s})()); 
+            return getInt(varOrStr.bind(this)()); 
+        }
+
+//        function varOrStr(){
+//            var name=':'+this.s;
+//            if (globalEnv.vars.hasOwnProperty(name)){
+//                return globalEnv.vars[name]; 
+//            } else {
+//                return this.s.toString();
+//            }
+//        }
+
+        function getEnvForFunGet(name,curenv){ 
+            var firstenv=curenv;
+            while(curenv!=null){
+                if ( curenv.functions.hasOwnProperty(name) )
+                    return curenv;
+                curenv=curenv.parentEnv;
+            }
+            return undefined;
+        }
+
+        function getEnvForVarGet(name,curenv){ 
+            while(curenv!=null){
+                if ( curenv.vars.hasOwnProperty(name) )
+                    return curenv;
+                curenv=curenv.parentEnv;
+            }
+            return undefined;
+        }
+
+        function getEnvForListSet(name,curenv){ 
+            var firstenv=curenv;
+            while(curenv!=null){
+                if ( curenv.list.hasOwnProperty(name) )
+                    return curenv;
+                curenv=curenv.parentEnv;
+            }
+            return firstenv;
+        }
+
+        function getEnvForListGet(name,curenv){ 
+            var firstenv=curenv;
+            while(curenv!=null){
+                if ( curenv.list.hasOwnProperty(name) )
+                    return curenv;
+                curenv=curenv.parentEnv;
+            }
+            return undefined;
+        }
+
+        function getEnvForVarSet(name,curenv){ 
+            var firstenv=curenv;
+            while(curenv!=null){
+                if ( curenv.vars.hasOwnProperty(name) )
+                    return curenv;
+                curenv=curenv.parentEnv;
+            }
+            return firstenv;
         }
 
         function varOrStr(){
             var name=':'+this.s;
-            if (globalEnv.vars.hasOwnProperty(name)){
-                return globalEnv.vars[name]; 
-            } else {
-                return this.s.toString();
+            var curenv=this.environ;
+            while(curenv!=null){
+                console.log(curenv);
+                if ( curenv.vars.hasOwnProperty(name) )
+                    return curenv.vars[name];
+                curenv=curenv.parentEnv;
             }
+            return this.s.toString();
         }
         function getVarList(){
             var name=':' + this.s;
@@ -177,7 +238,7 @@
                     if (f) {
                         return (f);
                     } else {
-                        return ({call:{run:varOrStr.bind({s:s})}, params:[]});
+                        return ({call:{run:varOrStr.bind({s:s,environ:this})}, params:[]});
                     }
                     break;
                 case 'milliseconds':
@@ -187,7 +248,7 @@
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:{run:getVarInt.bind({s:s})},params:[]}); 
+                            return ({call:{run:getVarInt.bind({s:s,environ:this})},params:[]}); 
                         }
                     } else {
                         return (asis(getInt(s)));
@@ -201,14 +262,14 @@
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:{run:getVarFloat.bind({s:s,opts:param.parseropts})},params:[]}); 
+                            return ({call:{run:getVarFloat.bind({s:s,opts:param.parseropts,environ:this})},params:[]}); 
                         }
                     } else {
                         return (asis(getFloat(s)));
                     }
                     break;
                 case 'list':
-                    return ({call:getVarList.bind({s:s}), params:{}});
+                    return ({call:getVarList.bind({s:s,environ:this}), params:{}});
                     break;
                 case 'block':
                     return (asis(extractblock_single.bind({codearray:codearray,opts:param.parseropts})()));
