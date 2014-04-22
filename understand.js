@@ -1,4 +1,15 @@
-
+        function newEnvironment(commandarray,parentEnv){
+                return {
+                    vars:{},
+                    lists:{},
+                    userfunctions:{},
+                    commandarray:commandarray,
+                    parentEnv:parentEnv,
+                    codePtr:0,
+                    paused:false,
+                };
+        }
+ 
         function getNum(s){
             if (isNaN(s)) 
                 return 0;

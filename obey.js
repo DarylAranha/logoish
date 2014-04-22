@@ -6,18 +6,27 @@ function pause(environ){
 }
 
 function unpause(environ){
+    var lastEnv=environ;
     while (environ){
         environ.paused=false;
+        environ=environ.parentEnv;
+    }
+    environ=lastEnv;
+    while (environ){
         callCommands(environ.commandarray,environ);
         environ=environ.parentEnv;
     }
+
 }
 
 function callCommands(commandarray, environment){
     var ret ;
     while (!environment.paused && environment.codePtr < commandarray.length){
+        console.log(commandarray[environment.codePtr].call.run.toSource());
         var command=commandarray[environment.codePtr++];
+        console.log(environment);
         ret=handleCall(command, environment);
+        console.log(environment);
         if (command.call.needsPause) pause(environment);
     }
     return ret;
@@ -35,7 +44,7 @@ function handleCall(obj, environment){
         }
 */
 
-        paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x],environment)});
+            paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x],environment)});
             ret=obj.call.run.apply(environment, paramArray);
             return ret;
     }

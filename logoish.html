@@ -111,17 +111,6 @@
 
         var last_run_command='';
         var command_history=[];
-        function newEnvironment(commandarray,parentEnv){
-                return {
-                    vars:{},
-                    lists:{},
-                    userfunctions:{},
-                    commandarray:commandarray,
-                    parentEnv:parentEnv,
-                    codePtr:0,
-                    paused:false,
-                };
-        }
 
         var globalEnv=newEnvironment([],null);
         var execlvl=0;

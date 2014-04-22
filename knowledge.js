@@ -623,11 +623,22 @@
                         },
                         ':rpt': {run: function(times,commands) {
                                     var rptEnv ;
+                                    commands=commands.slice();
                                     rptEnv= newEnvironment(commands,this);
-                                    for (var i = 0; i < times; i++){
-                                        rptEnv.codePtr = 0;
-                                        callCommands(commands, rptEnv);
-                                    }
+                                    rptEnv.curCtr= 0;
+                                    rptEnv.times= times;
+                                    commands.push({
+                                        call:{
+                                            run:function(){
+                                                this.curCtr=this.curCtr+1;
+                                                if (this.curCtr>=this.times-1){
+                                                    this.codePtr=0;
+                                                }
+                                            }
+                                        },
+                                        params:[]
+                                     });
+                                    callCommands(commands, rptEnv);
                                 },
                                 'help':'Repeat the set of commands following, bounded by endrpt',
                                 'shorthelp':'Repeat the set of commands following, bounded by endrpt',
