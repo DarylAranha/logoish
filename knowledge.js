@@ -728,9 +728,10 @@
                                 'params':{}
                                 },
                         ':set':{run: function(varname,value){
-                                        if (knowledge.commands.hasOwnProperty(':'+varname)) 
+                                        var variablename=':'+varname;
+                                        if (knowledge.commands.hasOwnProperty(variablename)) 
                                             logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        getEnvForVarSet(varname,this).vars[':'+ varname]=value;
+                                        getEnvForVarSet(variablename,this).vars[variablename]=value;
                                     },
                                 'help':'sets the value of a variable to the given value',
                                 'shorthelp':'sets the value of a variable',
@@ -750,8 +751,8 @@
 
                                         if (knowledge.commands.hasOwnProperty(variablename)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
                                         
-                                        varenv=getEnvForVarSet(varname,this);
-                                        varenv.vars[variablename]= parseFloat(varnv.vars[variablename]) + value;
+                                        varenv=getEnvForVarSet(variablename,this);
+                                        varenv.vars[variablename]= getFloat(varenv.vars[variablename]) + value;
                                     },
                                 'help':'increases the value of a variable by given value',
                                 'shorthelp':'increases the value of a variable by given value',
@@ -769,7 +770,7 @@
                                         var variablename=':'+varname;
 
                                         if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
-                                        varenv=getEnvForVarSet(varname,this);
+                                        varenv=getEnvForVarSet(variablename,this);
                                         varenv.vars[variablename]= parseFloat(varnv.vars[variablename]) - value;
                                     },
                                 'help':'decreases the value of a variable by given value',
@@ -780,9 +781,10 @@
                                          }
                                },
                         ':setlist':{run: function(listname,list){
-                                        if (knowledge.commands.hasOwnProperty(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
-                                        if (getEnvForVarGet(':'+listname)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
-                                        getEnvForListSet(':'+listname).lists[':'+ listname]={data:list, index:0};
+                                        var list_name=':'+listname;
+                                        if (knowledge.commands.hasOwnProperty(list_name)) logIt(list_name + ' is a function. ERROR Cannot use it as a listname');
+                                        if (getEnvForVarGet(list_name)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
+                                        getEnvForListSet(list_name).lists[list_name]={data:list, index:0};
                                     },
                                 'help':'Creates a list of items. Use the "pickfrom" function.',
                                 'shorthelp':'Creates a list of items',

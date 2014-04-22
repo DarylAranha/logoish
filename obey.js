@@ -20,7 +20,7 @@ function handleCall(obj, environment){
         }
 */
 
-        paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x])});
+        paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x],environment)});
             ret=obj.call.run.apply(environment, paramArray);
             return ret;
     }

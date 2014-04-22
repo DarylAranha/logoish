@@ -103,12 +103,12 @@
             if (!isNaN(s)){
                 num=parseFloat(s);
             }
-            if (!isNaN(min)){
+   /*       if (!isNaN(min)){
                 num=parseFloat(s<min?min:s);
             }
             if (!isNaN(max)){
                 num=parseFloat(s>max?max:s);
-            }
+            } */
             return num;
         }
 
@@ -117,21 +117,22 @@
             if (!isNaN(s)){
                 num=parseInt(s);
             }
-            if (!isNaN(min)){
+   /*         if (!isNaN(min)){
                 num=parseInt(s<min?min:s);
             }
             if (!isNaN(max)){
                 num=parseInt(s>max?max:s);
-            }
+            } */
             return num;
         }
 
-        function getVarFloat(){
-            return getFloat(varOrStr.bind(this)()); 
+        function getVarFloat(s){
+            var ret=getFloat(varOrStr.call(this,s)); 
+            return ret;
         }
 
-        function getVarInt(){
-            return getInt(varOrStr.bind(this)()); 
+        function getVarInt(s){
+            return getInt(varOrStr.call(this,s)); 
         }
 
 //        function varOrStr(){
@@ -186,25 +187,26 @@
             var firstenv=curenv;
             while(curenv!=null){
                 if ( curenv.vars.hasOwnProperty(name) )
+                {
                     return curenv;
+                    }
                 curenv=curenv.parentEnv;
             }
             return firstenv;
         }
 
-        function varOrStr(){
-            var name=':'+this.s;
-            var curenv=this.environ;
+        function varOrStr(s){
+            var name=':'+s;
+            var curenv=this;
             while(curenv!=null){
-                console.log(curenv);
                 if ( curenv.vars.hasOwnProperty(name) )
                     return curenv.vars[name];
                 curenv=curenv.parentEnv;
             }
-            return this.s.toString();
+            return s.toString();
         }
-        function getVarList(){
-            var name=':' + this.s;
+        function getVarList(s){
+            var name=':' + s;
             if (globalEnv.lists.hasOwnProperty(name)){
                 return environment.lists[name]; 
             } else {
@@ -216,6 +218,7 @@
         function getNextS(codearray){
             return(codearray.data[codearray.index++]);
         }
+
 
         function asis(obj){
                 return ({
@@ -238,7 +241,7 @@
                     if (f) {
                         return (f);
                     } else {
-                        return ({call:{run:varOrStr.bind({s:s,environ:this})}, params:[]});
+                        return ({call:{run:varOrStr}, params:[ asis(s) ]});
                     }
                     break;
                 case 'milliseconds':
@@ -248,7 +251,7 @@
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:{run:getVarInt.bind({s:s,environ:this})},params:[]}); 
+                            return ({call:{run:getVarInt},params:[asis(s)]}); 
                         }
                     } else {
                         return (asis(getInt(s)));
@@ -262,14 +265,14 @@
                         if (f) {
                             return (f);
                         } else  {
-                            return ({call:{run:getVarFloat.bind({s:s,opts:param.parseropts,environ:this})},params:[]}); 
+                            return ({call:{run:getVarFloat} ,params:[asis(s)] }); 
                         }
                     } else {
                         return (asis(getFloat(s)));
                     }
                     break;
                 case 'list':
-                    return ({call:getVarList.bind({s:s,environ:this}), params:{}});
+                    return ({call:{run:getVarList}, params:[asis(s)]});
                     break;
                 case 'block':
                     return (asis(extractblock_single.bind({codearray:codearray,opts:param.parseropts})()));
