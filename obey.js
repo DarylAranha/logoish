@@ -1,9 +1,24 @@
+function pause(environ){
+    while (environ){
+        environ.paused=true;
+        environ=environ.parentEnv;
+    }
+}
+
+function unpause(environ){
+    while (environ){
+        environ.paused=false;
+        callCommands(environ.commandarray,environ);
+        environ=environ.parentEnv;
+    }
+}
+
 function callCommands(commandarray, environment){
-    while (environment.codePtr < commandarray.length){
-        var ret ;
+    var ret ;
+    while (!environment.paused && environment.codePtr < commandarray.length){
         var command=commandarray[environment.codePtr++];
         ret=handleCall(command, environment);
-        if (command.call.handlesExec) break;
+        if (command.call.needsPause) pause(environment);
     }
     return ret;
 }

@@ -820,7 +820,8 @@
                                                 }
                                                 setTimeout(animslice, delay); 
                                             } else {
-                                                callCommands(animEnv.parentEnv.commandarray, animEnv.parentEnv);
+                                                //callCommands(animEnv.parentEnv.commandarray, animEnv.parentEnv);
+                                                unpause(animEnv.parentEnv);
                                             }
                                         };
                                         animslice();
@@ -846,7 +847,7 @@
                                                 }
                                              }
                                          },
-                                 handlesExec:true
+                                 needsPause:true
 
                                },
                         ':resetlist':{run: function(varname){
