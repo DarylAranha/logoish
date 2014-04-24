@@ -631,10 +631,10 @@
                                         call:{
                                             run:function(){
                                                 this.curCtr=this.curCtr+1;
-                                                if (this.curCtr>=this.times-1){
+                                                if (this.curCtr<this.times){
                                                     this.codePtr=0;
                                                 }
-                                            }
+                                            }.bind(rptEnv)
                                         },
                                         params:[]
                                      });

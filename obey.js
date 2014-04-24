@@ -22,11 +22,8 @@ function unpause(environ){
 function callCommands(commandarray, environment){
     var ret ;
     while (!environment.paused && environment.codePtr < commandarray.length){
-        console.log(commandarray[environment.codePtr].call.run.toSource());
         var command=commandarray[environment.codePtr++];
-        console.log(environment);
         ret=handleCall(command, environment);
-        console.log(environment);
         if (command.call.needsPause) pause(environment);
     }
     return ret;
