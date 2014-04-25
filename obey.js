@@ -1,9 +1,30 @@
+function pause(environ){
+    while (environ){
+        environ.paused=true;
+        environ=environ.parentEnv;
+    }
+}
+
+function unpause(environ){
+    var lastEnv=environ;
+    while (environ){
+        environ.paused=false;
+        environ=environ.parentEnv;
+    }
+    environ=lastEnv;
+    while (environ){
+        callCommands(environ.commandarray,environ);
+        environ=environ.parentEnv;
+    }
+
+}
+
 function callCommands(commandarray, environment){
-    while (environment.codePtr < commandarray.length){
-        var ret ;
+    var ret ;
+    while (!environment.paused && environment.codePtr < commandarray.length){
         var command=commandarray[environment.codePtr++];
         ret=handleCall(command, environment);
-        if (command.call.handlesExec) break;
+        if (command.call.needsPause) pause(environment);
     }
     return ret;
 }
@@ -20,7 +41,7 @@ function handleCall(obj, environment){
         }
 */
 
-        paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x])});
+            paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x],environment)});
             ret=obj.call.run.apply(environment, paramArray);
             return ret;
     }

@@ -111,18 +111,8 @@
 
         var last_run_command='';
         var command_history=[];
-        function newEnvironment(commandarray){
-                return {
-                    vars:{},
-                    lists:{},
-                    userfunctions:{},
-                    commandarray:commandarray,
-                    parentEnv:null,
-                    codePtr:0,
-                };
-        }
 
-        var globalEnv=newEnvironment([]);
+        var globalEnv=newEnvironment([],null);
         var execlvl=0;
         var debug_mode=false;
         var saveLast=true;
