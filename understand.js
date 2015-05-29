@@ -20,7 +20,7 @@
         function extractblock_multi(){
               var i, count, params;
               params=this.codearray.data;
-              count=this.opts.blockstarted?1:0;
+              count=this.opts.blockstarted?1:0; /* we already encountered the blockstart token */
 
               for (i = this.codearray.index -1; (0 != count) && (i < params.length) ; i++){
                   if (this.opts.blockstart == params[i]) count++; 
@@ -177,7 +177,7 @@
         function getEnvForListSet(name,curenv){ 
             var firstenv=curenv;
             while(curenv!=null){
-                if ( curenv.list.hasOwnProperty(name) )
+                if ( curenv.lists.hasOwnProperty(name) )
                     return curenv;
                 curenv=curenv.parentEnv;
             }

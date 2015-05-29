@@ -600,8 +600,8 @@
                         ':color':{run: function(color) {
                                     pen.color = color;
                                 },
-                                'help':'Sets the ink color of the pen',
-                                'shorthelp':'Sets the ink color of the pen',
+                                'help':'Sets the ink color of the current pen',
+                                'shorthelp':'Sets the ink color of the current pen',
                                 'params':{ 
                                     'color': {
                                         help: 'the color name to set the color of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.',
@@ -782,7 +782,7 @@
 
                                         if (knowledge.commands.hasOwnProperty(':'+varname)) logIt(varname + ' is a function. ERROR Cannot use it as a variable');
                                         varenv=getEnvForVarSet(variablename,this);
-                                        varenv.vars[variablename]= parseFloat(varnv.vars[variablename]) - value;
+                                        varenv.vars[variablename]= parseFloat(varenv.vars[variablename]) - value;
                                     },
                                 'help':'decreases the value of a variable by given value',
                                 'shorthelp':'decreases the value of a variable by given value',
@@ -794,8 +794,8 @@
                         ':setlist':{run: function(listname,list){
                                         var list_name=':'+listname;
                                         if (knowledge.commands.hasOwnProperty(list_name)) logIt(list_name + ' is a function. ERROR Cannot use it as a listname');
-                                        if (getEnvForVarGet(list_name)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
-                                        getEnvForListSet(list_name).lists[list_name]={data:list, index:0};
+                                        if (getEnvForVarGet(list_name,this)) logIt(listname + ' is a function. ERROR Cannot use it as a listname');
+                                        getEnvForListSet(list_name,this).lists[list_name]={data:list, index:0};
                                     },
                                 'help':'Creates a list of items. Use the "pickfrom" function.',
                                 'shorthelp':'Creates a list of items',
