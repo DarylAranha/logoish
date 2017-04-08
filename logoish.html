@@ -29,6 +29,11 @@
                 content:'>';
                 color:#999;
             }
+            .help_item{
+                font-style:italic;
+                color:blue;
+                cursor:help;
+                }
             #log{
                 height:7em; 
                 margin: 0.3em; 
@@ -98,30 +103,32 @@
             if (e.ctrlKey==true && e.keyCode==13){
                 executecommand();
             }
-            if (e.ctrlKey==true && (e.keyCode==38 || e.key=="Up" || e.keyCode==40 || e.key=='Down') && (i.value=="" || curcommand != -1)){
-                if (curcommand==-1) curcommand=0;
-                curcommand=((command_history.length+curcommand+key_offset[e.key])%(command_history.length));
-                var s=command_history[curcommand];
-                if (s!=undefined)
-                    i.value=s;
+            if (e.ctrlKey==true && (e.keyCode == 38 || e.key == "Up" || e.keyCode == 40 || e.key == 'Down') && (i.value == "" || curcommand != -1)) {
+                if (curcommand == -1) curcommand = 0;
+                curcommand = ((command_history.length+curcommand+key_offset[e.key])%(command_history.length));
+                var s = command_history[curcommand];
+                if (s != undefined)
+                    i.value = s;
             } else {
-                curcommand=-1;
+                curcommand = -1;
             }
         };
 
-        var last_run_command='';
-        var command_history=[];
+        var last_run_command = '';
+        var command_history = [];
 
         var globalEnv=newEnvironment([],null);
-        var execlvl=0;
-        var debug_mode=false;
-        var saveLast=true;
-        c.width=512;c.height=512;
-        var cx=c.getContext('2d');
-        var command, params;
-        var pen={x:0,y:0,angle:0,down:false,color:'black',width:1};
-        var piBy180=Math.PI/180;
-        var saveLast=true;
+        var execlvl = 0;
+        var debug_mode = false;
+        var saveLast = true;
+        c.width = 512; c.height = 512;
+        var cx = c.getContext('2d');
+        var command;
+        var params;
+        var pens = {'default':{x:0,y:0,angle:0,down:false,color:'black',fillcolor:'black',width:1}};
+        var pen = pens['default'];
+        var piBy180 = Math.PI/180;
+        var saveLast = true;
 
 
         function htmlescape(thestring){

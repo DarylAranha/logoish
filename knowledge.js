@@ -436,7 +436,7 @@
                 ':curX':{run:function() {
                         return (pen.x);
                     },
-                    help: 'returns the current x coordinate of the pen',
+                    help: 'returns the current x coordinate of the pen. Remember: origin is at the top-left',
                     shorthelp: 'returns the current x coordinate of the pen',
                     params:{},
                     returns:{
@@ -447,7 +447,7 @@
                 ':curY':{run:function() {
                         return (pen.y);
                     },
-                    help: 'returns the current y coordinate of the pen',
+                    help: 'returns the current y coordinate of the pen. Remember: origin is at the top-left',
                     shorthelp: 'returns the current y coordinate of the pen',
                     params:{},
                     returns:{
@@ -457,13 +457,25 @@
 
                 },
                 ':curColor':{run:function() {
-                        return (pen.y);
+                        return (pen.color);
                     },
                     help: 'returns the current color of the pen',
                     shorthelp: 'returns the current color of the pen',
                     params:{},
                     returns:{
-                        help:'the current x coordinate of the pen',
+                        help:'the current color of the pen',
+                        type: 'color',
+                    }
+
+                },
+                ':curFillColor':{run:function() {
+                        return (pen.fillcolor);
+                    },
+                    help: 'returns the current fillcolor of the pen',
+                    shorthelp: 'returns the current fillcolor of the pen',
+                    params:{},
+                    returns:{
+                        help:'the current fillcolor of the pen',
                         type: 'color',
                     }
 
@@ -581,17 +593,17 @@
                                  },
                                 'shorthelp':'Moves the pen to the given posisiton without drawing anything',
                                 'help':'Moves the pen to the given position without drawing anything',
-                                'params':{'distanceX': {help:'X part of the co ordinate',type:'pixels'},
+                                'params':{'distanceX': {help:'X part of the co ordinate. Remember: the origin is at top-left ',type:'pixels'},
                                           'distanceY': {help:'Y part of the co ordinate',type:'pixels'}
                                          }
 
                         },
                         ':info':{run: function() {
-                                     logIt('<b>Pen:</b> '+JSON.stringify(pen));
-                                     //logIt('<b>Variables:</b>'+JSON.stringify(vars));
-                                     //logIt('<b>:</b>'+JSON.stringify(lists));
-                                     saveLast=false;
-                                },
+                                        logIt('<b>Pen:</b> '+JSON.stringify(pen));
+                                        //logIt('<b>Variables:</b>'+JSON.stringify(vars));
+                                        //logIt('<b>:</b>'+JSON.stringify(lists));
+                                        saveLast=false;
+                                        },
                                 'shorthelp':'Prints different properties of the pen and environment',
                                 'help':'Prints different properties of the pen such as angle, current position, color. Also lists the variables and lists',
                                 'params':{}
@@ -610,6 +622,69 @@
                                      }
 
                         },
+                        ':fillcolor':{run: function(fillcolor) {
+                                    pen.fillcolor = fillcolor;
+                                },
+                                'help':'Sets the fillcolor of the current pen',
+                                'shorthelp':'Sets the fillcolor of the current pen',
+                                'params':{ 
+                                    'fillcolor': {
+                                        help: 'the color name to set the fillcolor of the ink to. It can be any color that is accepted by css as color. Generally includes many common colors.',
+                                        type: 'color'
+                                        }
+                                     }
+
+                        },
+                        ':rect':{run: function(x, y, width, height) {
+                                            cx.strokeStyle = pen.color;
+                                            cx.strokeRect(x ,y, width, height);
+                                          },
+                                'shorthelp':'Draws an unfilled rectangle at given co-ordinates with given dimensions',
+                                'help':'Draws a rectangle at the given co-ordinates (x ,y) with given dimensions(width, height) with the color set with "color" command.',
+                                'params':{
+                                    'x':{
+                                        help: 'X co-ordinate in pixels. Remember : origin is at top left',
+                                        type: 'pixels'
+                                    },
+                                    'y':{
+                                        help: 'Y co-ordinate in pixels. Remember : origin is at top left',
+                                        type: 'pixels'
+                                    },
+                                    'width':{
+                                        help: 'width in pixels.',
+                                        type: 'pixels'
+                                    },
+                                    'height':{
+                                        help: 'height in pixels.',
+                                        type: 'pixels'
+                                    }
+                                }
+                        },
+                        ':fillrect':{run: function(x, y, width, height) {
+                                            cx.fillStyle = pen.fillcolor;
+                                            cx.fillRect(x ,y, width, height);
+                                          },
+                                'shorthelp':'Draws a filled rectangle at given co-ordinates with given dimensions',
+                                'help':'Draws a rectangle at the given co-ordinates (x ,y) with given dimensions(width, height) filled with the color set with "fillcolor" command.',
+                                'params':{
+                                    'x':{
+                                        help: 'X co-ordinate in pixels. Remember : origin is at top left',
+                                        type: 'pixels'
+                                    },
+                                    'y':{
+                                        help: 'Y co-ordinate in pixels. Remember : origin is at top left',
+                                        type: 'pixels'
+                                    },
+                                    'width':{
+                                        help: 'width in pixels.',
+                                        type: 'pixels'
+                                    },
+                                    'height':{
+                                        help: 'height in pixels.',
+                                        type: 'pixels'
+                                    }
+                                }
+                        },
                         ':clear':{run: function() {
                                 var oldFillStyle=cx.fillStyle;
                                 cx.fillStyle='white';
@@ -623,8 +698,8 @@
                         },
                         ':rpt': {run: function(times,commands) {
                                     var rptEnv ;
-                                    commands=commands.slice();
-                                    rptEnv= newEnvironment(commands,this);
+                                    commands = commands.slice();
+                                    rptEnv = newEnvironment(commands,this);
                                     rptEnv.curCtr= 0;
                                     rptEnv.times= times;
                                     commands.push({
@@ -659,10 +734,10 @@
                                  }
 
                         },
-                        ':save':{run: function(name){
+                        ':save':{run: function(slotname){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
                                         if (currentlist == null) currentlist=[];
-                                        if (currentilst.indexOf(slotname) == -1){
+                                        if (currentlist.indexOf(slotname) == -1){
                                             localStorage.setItem('logoish_saved_' + slotname,last_run_command);
                                             currentlist.push(slotname);
                                             localStorage.setItem('logoish_saved',JSON.stringify(currentlist));
@@ -684,8 +759,13 @@
                                },
                         ':show':{run: function(slotname){
                                         var currentlist=JSON.parse(localStorage.getItem('logoish_saved'));
-                                        if (currentlist == null) currentlist=[];
-                                        if (currentlist.indexOf(name) != -1){
+                                        try{
+                                            currentlist;
+                                        }catch(ReferenceError){
+
+                                            currentlist=[];
+                                        }
+                                        if (currentlist.indexOf(slotname) != -1){
                                             i.value=(localStorage.getItem('logoish_saved_' + slotname));
                                         } else {
                                             logIt('ERROR: No such item saved');
@@ -693,7 +773,7 @@
                                         saveLast=false;
                                       },
                                  dontclear:true,
-                                'shorthelp':'Show a saved commmand',
+                                'shorthelp':'Load and show a saved commmand',
                                 'help':'Retrieve and populate the command prompt with a saved command, ready to be executed',
                                 'params':{
                                     'slotname':{
@@ -819,17 +899,19 @@
                                         var animEnv ;
                                         animEnv = newEnvironment(commandblock,this);
                                         animEnv.animating = false;
-                                        animEnv.counter=0;
+                                        animEnv.counter = 0;
                                         var animslice = function (){ 
                                             if (animEnv.counter < times){
-                                                if (!animEnv.animating){
-                                                    animEnv.animating = true;
-                                                    animEnv.codePtr=0;
-                                                    callCommands(commandblock, animEnv); 
-                                                    animEnv.counter++;
-                                                    animEnv.animating = false;
+                                                if (!animEnv.paused && !animEnv.stopped){
+                                                    if (!animEnv.animating){
+                                                        animEnv.animating = true;
+                                                        animEnv.codePtr = 0;
+                                                        callCommands(commandblock, animEnv); 
+                                                        animEnv.counter++;
+                                                        animEnv.animating = false;
+                                                    }
+                                                    setTimeout(animslice, delay); 
                                                 }
-                                                setTimeout(animslice, delay); 
                                             } else {
                                                 //callCommands(animEnv.parentEnv.commandarray, animEnv.parentEnv);
                                                 unpause(animEnv.parentEnv);
@@ -987,9 +1069,9 @@
                                 }
                                 function getHelp(topic) {
                                     var helptext='';
-                                    topic=':'+topic;
-                                    var helptopicobj=get_topic_object(topic);
-                                    if (hasHelp(topic)) {
+                                    var topicname=':'+topic;
+                                    var helptopicobj=get_topic_object(topicname);
+                                    if (hasHelp(topicname)) {
                                         helptext=helptopicobj.help;
                                         if (Object.keys(helptopicobj.params).length > 0) {
                                             helptext+='<h3>Parameters</h3>';
@@ -1012,7 +1094,8 @@
                                 if (topic == 'all' || topic == undefined) {
                                     for (command in knowledge.commands){
                                         if (hasShortHelp(command)){
-                                            helptext+="<br><span style='font-weight:bold'>"+command+"</span>:";
+                                            cmd = command.slice(1,command.length);
+                                            helptext+="<br><span style='font-weight:bold'><a class=\"help_item\" onclick=\"logIt('<hr><i>Help for </i><b>"+cmd+":</b>');execcommand('help " +cmd+ "')\">"+cmd+"</a></span>:";
                                             helptext+=getShortHelp(command);
                                         }
                                     }

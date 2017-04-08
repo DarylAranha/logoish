@@ -23,7 +23,7 @@ function callCommands(commandarray, environment){
     var ret ;
     while (!environment.paused && environment.codePtr < commandarray.length){
         var command=commandarray[environment.codePtr++];
-        ret=handleCall(command, environment);
+        ret = handleCall(command, environment);
         if (command.call.needsPause) pause(environment);
     }
     return ret;
@@ -42,7 +42,7 @@ function handleCall(obj, environment){
 */
 
             paramArray=Object.keys(obj.params).map(function(x){return handleCall(obj.params[x],environment)});
-            ret=obj.call.run.apply(environment, paramArray);
+            ret = obj.call.run.apply(environment, paramArray);
             return ret;
     }
 }
